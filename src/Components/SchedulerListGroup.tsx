@@ -14,11 +14,15 @@ interface SchedulerItemProps {
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
   onChange: (items: SchedulerItemProps[]) => void;
+  currentTime: string;
+  currentWeekday: string;
 }
 
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   items,
   onChange,
+  currentTime,
+  currentWeekday,
 }) => {
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
@@ -53,16 +57,68 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     );
   };
 
+  const getWeekdayValue = (weekday: string) => {
+    let index = 0;
+    for (let i = 0; i < 7; i++) {
+      if (weekday[i] === "1") index = i;
+    }
+    return index;
+  };
+
+  const getNextScheduledDay = (weekday: string, currentWeekday: number) => {
+    for (let i = 0; i < 7; i++) {
+      const dayIndex = (currentWeekday + i) % 7;
+      if (weekday[dayIndex] === "1") {
+        return dayIndex;
+      }
+    }
+    return -1; // In case no valid day is found
+  };
+
+  const sortedItems = [...items].sort((a, b) => {
+    const currentTimeValue = new Date(`1970-01-01T${currentTime}`).getTime();
+
+    const aNextDay = getNextScheduledDay(
+      a.weekday,
+      getWeekdayValue(currentWeekday)
+    );
+    const bNextDay = getNextScheduledDay(
+      b.weekday,
+      getWeekdayValue(currentWeekday)
+    );
+
+    if (aNextDay !== bNextDay) {
+      return aNextDay - bNextDay;
+    }
+
+    const aTime = new Date(`1970-01-01T${a.start}`).getTime();
+    const bTime = new Date(`1970-01-01T${b.start}`).getTime();
+
+    if (
+      aNextDay === getWeekdayValue(currentWeekday) &&
+      aTime < currentTimeValue
+    ) {
+      return 1;
+    } else if (
+      bNextDay === getWeekdayValue(currentWeekday) &&
+      bTime < currentTimeValue
+    ) {
+      return -1;
+    } else {
+      return aTime - bTime;
+    }
+  });
+
   return (
     <div
       className="d-flex flex-column align-items-center mb-3 border p-2 rounded p-2"
       style={{ width: "fit-content", height: "fit-content" }}
     >
       <div
-        className="overflow-auto"
+        className="list-group overflow-auto"
         style={{ maxHeight: "400px", width: "fit-content" }}
       >
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <SchedulerItem
             key={item.id}
             item={item}
