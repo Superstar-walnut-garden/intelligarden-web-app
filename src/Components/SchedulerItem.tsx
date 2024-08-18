@@ -37,7 +37,11 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   };
 
   return (
-    <div className="d-flex flex-column align-items-start m-2 border p-2 rounded p-2 ">
+    <div
+      className={`list-group-item ${
+        item.on === true ? "active" : ""
+      } d-flex flex-column align-items-start m-2 border p-2 rounded p-2`}
+    >
       <div className="d-flex align-items-center w-100 mb-3">
         <div className="d-flex flex-column mx-3">
           <label>Start: </label>
