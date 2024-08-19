@@ -30,16 +30,18 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     const newItem: SchedulerItemProps = {
       id: Date.now(),
       weekday: "0000000",
-      start: "",
-      duration: "",
+      start: "00:00",
+      duration: "01:30",
       enabled: true,
       on: false,
     };
     onChange([...items, newItem]);
+    onSave();
   };
 
   const handleRemoveItem = (id: number) => {
     onChange(items.filter((item) => item.id !== id));
+    onSave();
   };
 
   const handleToggleEnable = (id: number) => {
@@ -48,6 +50,7 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
         item.id === id ? { ...item, enabled: !item.enabled } : item
       )
     );
+    onSave();
   };
   const handleSave = () => {
     onSave();
