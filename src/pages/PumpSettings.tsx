@@ -33,9 +33,8 @@ const PumpSettings: React.FC = () => {
       }
     };
     fetchData();
-    const intervalId = setInterval(fetchData, 5000); // Update every 5 second
 
-    return () => clearInterval(intervalId);
+    return;
   }, []);
 
   useEffect(() => {
@@ -64,6 +63,25 @@ const PumpSettings: React.FC = () => {
     setSchedulerItems(newItems);
     console.log("Saved items:", newItems);
   };
+  const handleSave = () => {
+    const sendData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/setPumpSchedule", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(schedulerItems),
+        });
+        const data: SchedulerItemProps[] = await response.json();
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    sendData();
+    console.log("list sent to server!");
+  };
 
   return (
     <>
@@ -76,6 +94,7 @@ const PumpSettings: React.FC = () => {
           <SchedulerListGroup
             items={schedulerItems}
             onChange={handleChange}
+            onSave={handleSave}
             currentTime={currentTime}
             currentWeekday={currentWeekday}
           />

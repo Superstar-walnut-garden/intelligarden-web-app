@@ -14,6 +14,7 @@ interface SchedulerItemProps {
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
   onChange: (items: SchedulerItemProps[]) => void;
+  onSave: () => void;
   currentTime: string;
   currentWeekday: string;
 }
@@ -21,6 +22,7 @@ interface SchedulerListGroupProps {
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   items,
   onChange,
+  onSave,
   currentTime,
   currentWeekday,
 }) => {
@@ -46,6 +48,9 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
         item.id === id ? { ...item, enabled: !item.enabled } : item
       )
     );
+  };
+  const handleSave = () => {
+    onSave();
   };
 
   const handleItemChange = (
@@ -93,7 +98,9 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
 
     const aTime = new Date(`1970-01-01T${a.start}`).getTime();
     const bTime = new Date(`1970-01-01T${b.start}`).getTime();
-
+    // if (a.on === true) return 1;
+    // else if (b.on === true) return -1;
+    // else
     if (
       aNextDay === getWeekdayValue(currentWeekday) &&
       aTime < currentTimeValue
@@ -125,6 +132,7 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
             onRemove={() => handleRemoveItem(item.id)}
             onToggleEnable={() => handleToggleEnable(item.id)}
             onChange={(updatedItem) => handleItemChange(item.id, updatedItem)}
+            onSave={handleSave}
           />
         ))}
       </div>

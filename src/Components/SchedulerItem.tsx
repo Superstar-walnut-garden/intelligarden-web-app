@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import WeekSelector from "./WeekSelector";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { PencilSquare } from "react-bootstrap-icons";
+import { FloppyFill } from "react-bootstrap-icons";
 
 interface SchedulerItemProps {
   id: number;
@@ -16,6 +18,7 @@ interface SchedulerItemComponentProps {
   onRemove: () => void;
   onToggleEnable: () => void;
   onChange: (updatedItem: Partial<SchedulerItemProps>) => void;
+  onSave: () => void;
 }
 
 const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
@@ -23,6 +26,7 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   onRemove,
   onToggleEnable,
   onChange,
+  onSave,
 }) => {
   const handleWeekSelectorChange = (weekday: string) => {
     onChange({ weekday });
@@ -35,11 +39,16 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ duration: e.target.value });
   };
+  const [isEditing, setIsEditing] = useState(false);
+  const handleEditClick = () => {
+    if (isEditing) onSave();
+    setIsEditing(!isEditing);
+  };
 
   return (
     <div
       className={`list-group-item ${
-        item.on === true ? "active" : ""
+        isEditing ? "bg-warning" : ""
       } d-flex flex-column align-items-start m-2 border p-2 rounded p-2`}
     >
       <div className="d-flex align-items-center w-100 mb-3">
@@ -51,7 +60,7 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
             className="form-control"
             value={item.start}
             onChange={handleStartTimeChange}
-            disabled={!item.enabled}
+            disabled={!isEditing}
           />
         </div>
         <div className="d-flex justify-content-end flex-column mx-3">
@@ -62,8 +71,22 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
             className="form-control "
             value={item.duration}
             onChange={handleDurationChange}
-            disabled={!item.enabled}
+            disabled={!isEditing}
           />
+        </div>
+        <div className="d-flex flex-column">
+          <button
+            className={`btn btn-primary rounded-circle `}
+            onClick={handleEditClick}
+          >
+            {" "}
+            <div hidden={isEditing}>
+              <PencilSquare />
+            </div>
+            <div hidden={!isEditing}>
+              <FloppyFill />
+            </div>
+          </button>
         </div>
       </div>
       <div className="d-flex flex-column align-items-start mb-3">
@@ -71,6 +94,7 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
         <WeekSelector
           initialSelectedDays={item.weekday}
           onSelectionChange={handleWeekSelectorChange}
+          isEnabled={isEditing}
         />
       </div>
       <div className="d-flex w-100">

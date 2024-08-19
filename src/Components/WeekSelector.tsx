@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./WeekSelector.css";
 
 interface WeekSelectorProps {
+  isEnabled?: boolean;
   initialSelectedDays?: string;
   onSelectionChange?: (selectedDays: string) => void;
 }
@@ -12,6 +13,7 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const WeekSelector: React.FC<WeekSelectorProps> = ({
   initialSelectedDays = "0000000",
   onSelectionChange,
+  isEnabled = false,
 }) => {
   const [selectedDays, setSelectedDays] = useState<boolean[]>(
     initialSelectedDays.split("").map((char) => char === "1")
@@ -28,9 +30,11 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({
   }, [selectedDays, onSelectionChange]);
 
   const toggleDay = (index: number) => {
-    const newSelectedDays = [...selectedDays];
-    newSelectedDays[index] = !newSelectedDays[index];
-    setSelectedDays(newSelectedDays);
+    if (isEnabled) {
+      const newSelectedDays = [...selectedDays];
+      newSelectedDays[index] = !newSelectedDays[index];
+      setSelectedDays(newSelectedDays);
+    }
   };
 
   const getSelectedDaysString = () => {
@@ -38,7 +42,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({
   };
 
   return (
-    <div className="d-flex align-items-center border m-2 rounded-pill">
+    <div className="d-flex align-items-center border m-2 rounded-pill bg-dark">
       {daysOfWeek.map((day, index) => (
         <div
           style={{ borderRadius: "50%" }}
