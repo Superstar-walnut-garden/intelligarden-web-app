@@ -42,7 +42,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({
   };
 
   return (
-    <div className="d-flex align-items-center border m-2 rounded-pill bg-dark">
+    <div className="d-flex align-items-center border m-2 rounded-pill">
       {daysOfWeek.map((day, index) => (
         <div
           style={{ borderRadius: "50%" }}
