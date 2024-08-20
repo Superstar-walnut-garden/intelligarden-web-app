@@ -28,7 +28,7 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
 }) => {
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
-      id: Date.now(),
+      id: nextId(),
       weekday: "0000000",
       start: "00:00",
       duration: "01:30",
@@ -44,9 +44,19 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     onSave();
   };
 
+  function nextId() {
+    let unReservedId= 0;
+    items.map((item) => {// search
+    if(unReservedId <= item.id){
+      unReservedId = item.id + 1;
+    }
+    });
+    return unReservedId;
+  }
+
   const handleToggleEnable = (id: number) => {
     onChange(
-      items.map((item) =>
+      sortedItems.map((item) =>
         item.id === id ? { ...item, enabled: !item.enabled } : item
       )
     );
