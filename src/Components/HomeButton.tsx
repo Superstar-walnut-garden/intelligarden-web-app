@@ -1,12 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
+// import React from "react";
+// import { Link } from "react-router-dom";
 
-const HomeButton: React.FC = () => {
-  return (
-    <Link to="/" className="btn btn-primary">
-      Home
-    </Link>
-  );
-};
+// const HomeButton: React.FC = () => {
+//   return (
+//     <Link to="/" className="btn btn-primary">
+//       Home
+//     </Link>
+//   );
+// };
 
-export default HomeButton;
+// export default HomeButton;
