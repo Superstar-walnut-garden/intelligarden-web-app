@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SchedulerListGroup from "../Components/SchedulerListGroup";
-import HomeButton from "../Components/HomeButton";
+// import HomeButton from "../Components/HomeButton";
 
 // Define the type for scheduler items
 interface SchedulerItemProps {
@@ -22,7 +22,8 @@ const PumpSettings: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/getPumpSchedule");
+        const response = await fetch("/getPumpSchedule");
+        //const response = await fetch("http://localhost:3000/getPumpSchedule");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -40,7 +41,8 @@ const PumpSettings: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/getCurrentTime");
+        // const response = await fetch("http://localhost:3000/getCurrentTime");
+        const response = await fetch("/getCurrentTime");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -66,14 +68,14 @@ const PumpSettings: React.FC = () => {
   const handleSave = () => {
     const sendData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/setPumpSchedule", {
+        //const response = await fetch("http://localhost:3000/setPumpSchedule", {
+          await fetch("/setPumpSchedule", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(schedulerItems),
         });
-        const data: SchedulerItemProps[] = await response.json();
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
