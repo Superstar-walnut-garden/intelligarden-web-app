@@ -1,13 +1,21 @@
 // src/components/HotspotConfigForm.tsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 
+interface HotspotConfig {
+  ssid: string;
+  password: string;
+}
+
 const HotspotConfigForm: React.FC = () => {
-  const [hotspotConfig, setHotspotConfig] = useState<any>({});
+  const [hotspotConfig, setHotspotConfig] = useState<HotspotConfig>({
+    ssid: '',
+    password: '',
+  });
 
   useEffect(() => {
-    axios.get('/getHotspotConfig').then(response => {
+    axios.get<HotspotConfig>('/getHotspotConfig').then((response: AxiosResponse<HotspotConfig>) => {
       setHotspotConfig(response.data);
     });
   }, []);
@@ -24,7 +32,7 @@ const HotspotConfigForm: React.FC = () => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(response => {
+    }).then((response: AxiosResponse) => {
       console.log('Hotspot config saved:', response.data);
     });
   };

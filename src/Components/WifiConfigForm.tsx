@@ -1,14 +1,27 @@
 // src/components/WifiConfigForm.tsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 
+interface WifiState {
+  ssid: string;
+  password: string;
+  dhcpEnabled: boolean;
+  ip?: string;
+  subnet?: string;
+  dns?: string;
+}
+
 const WifiConfigForm: React.FC = () => {
-  const [wifiState, setWifiState] = useState<any>({});
+  const [wifiState, setWifiState] = useState<WifiState>({
+    ssid: '',
+    password: '',
+    dhcpEnabled: true,
+  });
   const [dhcpEnabled, setDhcpEnabled] = useState<boolean>(true);
 
   useEffect(() => {
-    axios.get('/getWifiState').then(response => {
+    axios.get<WifiState>('/getWifiState').then((response: AxiosResponse<WifiState>) => {
       setWifiState(response.data);
       setDhcpEnabled(response.data.dhcpEnabled);
     });
@@ -34,7 +47,7 @@ const WifiConfigForm: React.FC = () => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(response => {
+    }).then((response: AxiosResponse) => {
       console.log('WiFi config saved:', response.data);
     });
   };

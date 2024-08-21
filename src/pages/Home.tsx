@@ -1,4 +1,3 @@
-import React from "react";
 import Widget from "../Components/Widget";
 import TitleBar from "../Components/TitleBar";
 

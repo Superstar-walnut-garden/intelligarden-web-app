@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import SchedulerListGroup from "../Components/SchedulerListGroup";
-import HomeButton from "../Components/HomeButton";
 import TitleBar from "../Components/TitleBar";
 
 // Define the type for scheduler items
