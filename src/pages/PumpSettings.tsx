@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SchedulerListGroup from "../Components/SchedulerListGroup";
-// import HomeButton from "../Components/HomeButton";
+import HomeButton from "../Components/HomeButton";
+import TitleBar from "../Components/TitleBar";
 
 // Define the type for scheduler items
 interface SchedulerItemProps {
@@ -88,10 +89,7 @@ const PumpSettings: React.FC = () => {
   return (
     <>
       <div className="flex-d align-items-center">
-        <div className="border-bottom pb-2 mb-4">
-          {/* <HomeButton /> */}
-          <h1 className="page-header text-center">Pump Settings</h1>
-        </div>
+        <TitleBar title = "Pump Settings"/>
         <div className="d-flex justify-content-center align-items-center">
           <SchedulerListGroup
             items={schedulerItems}
