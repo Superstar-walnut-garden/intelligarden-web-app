@@ -9,7 +9,9 @@ interface WifiState {
   dhcpEnabled: boolean;
   ip?: string;
   subnet?: string;
-  dns?: string;
+  gateway?: string;
+  primaryDNS?: string;
+  secondaryDNS?: string;
 }
 
 const WifiConfigForm: React.FC = () => {
@@ -37,8 +39,10 @@ const WifiConfigForm: React.FC = () => {
       password: wifiState.password,
       dhcpEnabled,
       ip: dhcpEnabled ? '' : wifiState.ip,
+      gateway: dhcpEnabled ? '' : wifiState.gateway,
       subnet: dhcpEnabled ? '' : wifiState.subnet,
-      dns: dhcpEnabled ? '' : wifiState.dns,
+      primaryDNS: dhcpEnabled ? '' : wifiState.primaryDNS,
+      secondaryDNS: dhcpEnabled ? '' : wifiState.secondaryDNS
     };
 
     console.log('Payload:', payload); // Debugging line
@@ -106,13 +110,33 @@ const WifiConfigForm: React.FC = () => {
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="formDns">
-            <Form.Label column sm={2}>DNS</Form.Label>
+          <Form.Group as={Row} controlId="formGateway">
+            <Form.Label column sm={2}>Gateway</Form.Label>
             <Col sm={10}>
               <Form.Control
                 type="text"
-                value={wifiState.dns || ''}
-                onChange={(e) => setWifiState({ ...wifiState, dns: e.target.value })}
+                value={wifiState.gateway || ''}
+                onChange={(e) => setWifiState({ ...wifiState, gateway: e.target.value })}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="formPrimaryDNS">
+            <Form.Label column sm={2}>Primary DNS</Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                value={wifiState.primaryDNS || ''}
+                onChange={(e) => setWifiState({ ...wifiState, primaryDNS: e.target.value })}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="formSecondaryDNS">
+            <Form.Label column sm={2}>Secondary DNS</Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                value={wifiState.secondaryDNS || ''}
+                onChange={(e) => setWifiState({ ...wifiState, secondaryDNS: e.target.value })}
               />
             </Col>
           </Form.Group>
