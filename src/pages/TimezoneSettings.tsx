@@ -13,7 +13,7 @@ interface FirebaseSettingsData {
   // interval?: string;
 }
 
-const FirebaseSettings: React.FC = () => {
+const TimezoneSettings: React.FC = () => {
   const [firebaseSettingsData, setFirebaseSettingsData] =
     useState<FirebaseSettingsData>({
       apiKey: "",
@@ -61,9 +61,6 @@ const FirebaseSettings: React.FC = () => {
       .then((response: AxiosResponse) => {
         console.log("Firebase config saved:", response.data);
       });
-  };
-  const handleEnableToggle = () => {
-    setFirebaseEnabled(!firebaseEnabled);
   };
 
   return (
@@ -183,4 +180,4 @@ const FirebaseSettings: React.FC = () => {
   );
 };
 
-export default FirebaseSettings;
+export default TimezoneSettings;

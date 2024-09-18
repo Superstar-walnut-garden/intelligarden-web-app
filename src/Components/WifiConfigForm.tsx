@@ -25,7 +25,7 @@ const WifiConfigForm: React.FC = () => {
   useEffect(() => {
     axios.get<WifiState>('/getWifiState').then((response: AxiosResponse<WifiState>) => {
       setWifiState(response.data);
-      setDhcpEnabled(response.data.dhcpEnabled);
+      // setDhcpEnabled(response.data.dhcpEnabled);
     });
   }, []);
 
