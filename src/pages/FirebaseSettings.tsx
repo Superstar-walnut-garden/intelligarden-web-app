@@ -10,7 +10,7 @@ interface FirebaseSettingsData {
   userEmail: string;
   userPassword: string;
   databaseRootName: string;
-  // interval?: string;
+  enabled: boolean;
 }
 
 const FirebaseSettings: React.FC = () => {
@@ -21,6 +21,7 @@ const FirebaseSettings: React.FC = () => {
       userEmail: "",
       userPassword: "",
       databaseRootName: "",
+      enabled: false,
     });
 
   useEffect(() => {
@@ -28,15 +29,7 @@ const FirebaseSettings: React.FC = () => {
       .get<FirebaseSettingsData>("/getFirebaseData")
       .then((response: AxiosResponse<FirebaseSettingsData>) => {
         setFirebaseSettingsData(response.data);
-        if (
-          firebaseSettingsData.apiKey === "" &&
-          firebaseSettingsData.databaseURL === "" &&
-          firebaseSettingsData.userEmail === "" &&
-          firebaseSettingsData.userPassword === "" &&
-          firebaseSettingsData.databaseRootName === ""
-        ) {
-          setFirebaseEnabled(false);
-        }
+        setFirebaseEnabled(response.data.enabled);
       });
   }, []);
   const [firebaseEnabled, setFirebaseEnabled] = useState<boolean>(false);
@@ -48,6 +41,7 @@ const FirebaseSettings: React.FC = () => {
       userEmail: firebaseSettingsData.userEmail,
       userPassword: firebaseSettingsData.userPassword,
       databaseRootName: firebaseSettingsData.databaseRootName,
+      enabled: firebaseEnabled,
     };
 
     console.log("Payload:", payload); // Debugging line
