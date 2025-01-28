@@ -18,7 +18,7 @@ const WifiConfigForm: React.FC = () => {
   const [wifiState, setWifiState] = useState<WifiState>({
     ssid: '',
     password: '',
-    dhcpEnabled: true,
+    dhcpEnabled: false,
   });
   const [dhcpEnabled, setDhcpEnabled] = useState<boolean>(true);
 
