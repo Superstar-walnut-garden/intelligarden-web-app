@@ -17,6 +17,7 @@ const Home = () => {
         <Widget title="Setup Slave Nodes" info="Connect to other esp32 nodes" link="/" bgColor="#ffee99" />
         <Widget title="Setup Valves" info="Connect to a Wired / Wireless Valve" link="/" bgColor="#ffcc99" />
         <Widget title="System Region" info="Configure System Timezone" link="/" bgColor="#cccc99" />
+        <Widget title="Event Manager" info="Link Subsystems Based on Events" link="/event-manager" bgColor="#cccc66" />
       </div>
     </div>
     </>
