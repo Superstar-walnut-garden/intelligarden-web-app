@@ -90,7 +90,7 @@ const PumpSettings: React.FC = () => {
   return (
     <>
       <div className="flex-d align-items-center">
-        <TitleBar title="Pump Settings" />
+        <TitleBar title="Manage Schedulers" />
         <div className="d-flex justify-content-center align-items-center">
           <SchedulerListGroup
             items={schedulerItems}
