@@ -2,6 +2,7 @@ import React from "react";
 import SchedulerItem from "./SchedulerItem";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SchedulerItemProps } from "./SchedulerItem";
+import { Event } from "./EventManager";
 
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
@@ -10,6 +11,7 @@ interface SchedulerListGroupProps {
   onRemove: (id: number) => void;
   currentTime: string;
   currentWeekday: string;
+  eventList: Event[];
 }
 
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
@@ -19,6 +21,7 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   onRemove,
   currentTime,
   currentWeekday,
+  eventList,
 }) => {
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
@@ -84,6 +87,7 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
             item={item}
             onRemove={(id) => handleRemoveItem(id)}
             onSave={(updatedItem) => handleSave(updatedItem)}
+            eventList={eventList}
           />
         ))}
       </div>

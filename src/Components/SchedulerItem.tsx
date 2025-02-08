@@ -3,6 +3,7 @@ import WeekSelector from "./WeekSelector";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
+import {Event} from "./EventManager";
 
 export interface SchedulerItemProps {
   id: number;
@@ -17,12 +18,14 @@ export interface SchedulerItemProps {
 
 interface SchedulerItemComponentProps {
   item: SchedulerItemProps;
+  eventList: Event[];
   onRemove: (id: number) => void;
   onSave: (item: SchedulerItemProps) => void;
 }
 
 const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   item,
+  eventList,
   onRemove,
   onSave
 }) => {
@@ -56,6 +59,14 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
       name: e.target.value
     }));
   }
+
+  const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLocalItem(prevItem => ({
+      ...prevItem,
+      event_id: e.target.value
+    }));
+  }; 
+
   const [isEditing, setIsEditing] = useState(false);
   const [localItem, setLocalItem] = useState(item);
   const handleEditClick = () => {
@@ -82,15 +93,21 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
           />
         </div>
         <div className="d-flex align-items-center w-100 mb-1">
-          <label className="text-muted w-auto"> Event: </label>
-          <input
+          <label className="text-muted w-auto mx-2"> Event: </label>
+          <select
             title="eventID"
-            type="text"
             className={`w-auto mx-1 ${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
             value={localItem.event_id}
-            onChange={handleNameChange}
-            disabled={!isEditing} 
-          />
+            onChange={handleEventChange}
+            disabled={!isEditing}
+          >
+            <option value={-1}>No events assigned!</option>
+            {eventList.map((event) => (
+              <option key={event.id} value={event.id}>
+                {event.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       

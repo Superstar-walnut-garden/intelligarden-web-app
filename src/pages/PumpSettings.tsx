@@ -3,18 +3,26 @@ import SchedulerListGroup from "../Components/SchedulerListGroup";
 import TitleBar from "../Components/TitleBar";
 import axios from 'axios';
 import { SchedulerItemProps } from "../Components/SchedulerItem";
+import { Event } from "../Components/EventManager";
 
 const PumpSettings: React.FC = () => {
   const [schedulerItems, setSchedulerItems] = useState<SchedulerItemProps[]>([]);
   const [currentTime, setCurrentTime] = useState<string>("");
   const [currentWeekday, setCurrentWeekday] = useState<string>("");
-
+  const [events, setEvents] = useState<Event[]>([]);
   useEffect(() => {
     fetchScheduleList();
     fetchCurrentTime();
     const intervalId = setInterval(fetchCurrentTime, 60000); // Update every minute
 
     return () => clearInterval(intervalId);
+  }, []);
+
+  
+  useEffect(() => {
+    axios.get<Event[]>('http://localhost:3000/getEventList').then((response) => {
+      setEvents(response.data);
+    });
   }, []);
 
   const fetchScheduleList = async () => {
@@ -91,6 +99,7 @@ const PumpSettings: React.FC = () => {
             onCreate={createSchedule}
             currentTime={currentTime}
             currentWeekday={currentWeekday}
+            eventList={events}
             //onDelete={deleteSchedule} // Pass deleteSchedule function
             //onCreate={createSchedule} // Pass createSchedule function
           />
