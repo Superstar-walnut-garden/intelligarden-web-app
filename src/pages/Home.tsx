@@ -7,8 +7,8 @@ const Home = () => {
     <TitleBar title="Intelligarden Hub"/>
     <div className="container">
       <div className="row">
-        <Widget title="Pump Settings" info="Configure your pump" link="/pumpsettings" bgColor="#e3f2fd" />
-        <Widget title="WiFi Settings" info="Connected to Superstar-garden 2.4" link="/wifisettings" bgColor="#ffebee" />
+        <Widget title="WiFi Settings" info="Change WiFi or Hotspot settings" link="/wifisettings" bgColor="#ffebee" />
+        <Widget title="Manage Schedulers" info="Schedule your irrigation, lighting and etc..." link="/pumpsettings" bgColor="#e3f2fd" />
         <Widget title="Temperature Sensor Setup" info="Setup your sensors" link="/TempSensorSettings" bgColor="#e8f5e9" />
         <Widget title="Firebase Settings" info="Configure Firebase" link="/FirebaseSettings" bgColor="#fff3e0" />
         <Widget title="Water Sensor Settings" info="Pond Inlet Water Data Logging" link="/" bgColor="#a3dafd" />
