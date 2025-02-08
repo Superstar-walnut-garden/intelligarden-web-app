@@ -1,28 +1,22 @@
 import React from "react";
 import SchedulerItem from "./SchedulerItem";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-interface SchedulerItemProps {
-  id: number;
-  weekday: string;
-  start: string;
-  duration: string;
-  enabled: boolean;
-  on: boolean;
-}
+import { SchedulerItemProps } from "./SchedulerItem";
 
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
-  onChange: (items: SchedulerItemProps[]) => void;
-  onSave: () => void;
+  onCreate: (item: SchedulerItemProps) => void;
+  onSave: (item: SchedulerItemProps) => void;
+  onRemove: (id: number) => void;
   currentTime: string;
   currentWeekday: string;
 }
 
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   items,
-  onChange,
   onSave,
+  onCreate,
+  onRemove,
   currentTime,
   currentWeekday,
 }) => {
@@ -35,13 +29,11 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
       enabled: true,
       on: false,
     };
-    onChange([...items, newItem]);
-    onSave();
+    onCreate(newItem);
   };
 
   const handleRemoveItem = (id: number) => {
-    onChange(items.filter((item) => item.id !== id));
-    onSave();
+    onRemove(id);
   };
 
   function nextId() {
@@ -54,26 +46,10 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     return unReservedId;
   }
 
-  const handleToggleEnable = (id: number) => {
-    onChange(
-      sortedItems.map((item) =>
-        item.id === id ? { ...item, enabled: !item.enabled } : item
-      )
-    );
-    onSave();
-  };
-  const handleSave = () => {
-    onSave();
-  };
-
-  const handleItemChange = (
-    id: number,
-    updatedItem: Partial<SchedulerItemProps>
-  ) => {
-    onChange(
-      items.map((item) => (item.id === id ? { ...item, ...updatedItem } : item))
-    );
-  };
+  
+  const handleSave = (item: SchedulerItemProps) => {
+    onSave(item);
+  }
 
   const getWeekdayValue = (weekday: string) => {
     let index = 0;
@@ -93,42 +69,6 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     return -1; // In case no valid day is found
   };
 
-  const sortedItems = [...items].sort((a, b) => {
-    const currentTimeValue = new Date(`1970-01-01T${currentTime}`).getTime();
-
-    const aNextDay = getNextScheduledDay(
-      a.weekday,
-      getWeekdayValue(currentWeekday)
-    );
-    const bNextDay = getNextScheduledDay(
-      b.weekday,
-      getWeekdayValue(currentWeekday)
-    );
-
-    if (aNextDay !== bNextDay) {
-      return aNextDay - bNextDay;
-    }
-
-    const aTime = new Date(`1970-01-01T${a.start}`).getTime();
-    const bTime = new Date(`1970-01-01T${b.start}`).getTime();
-    // if (a.on === true) return 1;
-    // else if (b.on === true) return -1;
-    // else
-    if (
-      aNextDay === getWeekdayValue(currentWeekday) &&
-      aTime < currentTimeValue
-    ) {
-      return 1;
-    } else if (
-      bNextDay === getWeekdayValue(currentWeekday) &&
-      bTime < currentTimeValue
-    ) {
-      return -1;
-    } else {
-      return aTime - bTime;
-    }
-  });
-
   return (
     <div
       className="d-flex flex-column align-items-center mb-3 border p-2 rounded p-2"
@@ -138,14 +78,12 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
         className="list-group overflow-auto"
         style={{ maxHeight: "400px", width: "fit-content" }}
       >
-        {sortedItems.map((item) => (
+        {items.map((item) => (
           <SchedulerItem
             key={item.id}
             item={item}
-            onRemove={() => handleRemoveItem(item.id)}
-            onToggleEnable={() => handleToggleEnable(item.id)}
-            onChange={(updatedItem) => handleItemChange(item.id, updatedItem)}
-            onSave={handleSave}
+            onRemove={(id) => handleRemoveItem(id)}
+            onSave={(updatedItem) => handleSave(updatedItem)}
           />
         ))}
       </div>

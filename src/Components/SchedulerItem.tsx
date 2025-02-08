@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 
-interface SchedulerItemProps {
+export interface SchedulerItemProps {
   id: number;
   weekday: string;
   start: string;
@@ -15,33 +15,42 @@ interface SchedulerItemProps {
 
 interface SchedulerItemComponentProps {
   item: SchedulerItemProps;
-  onRemove: () => void;
-  onToggleEnable: () => void;
-  onChange: (updatedItem: Partial<SchedulerItemProps>) => void;
-  onSave: () => void;
+  onRemove: (id: number) => void;
+  onSave: (item: SchedulerItemProps) => void;
 }
 
 const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   item,
   onRemove,
-  onToggleEnable,
-  onChange,
-  onSave,
+  onSave
 }) => {
   const handleWeekSelectorChange = (weekday: string) => {
-    onChange({ weekday });
+    setLocalItem(prevItem => ({
+      ...prevItem,
+      weekday: weekday
+    }));
+  };
+  const handleRemove = () => {
+    onRemove(localItem.id);
   };
 
   const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ start: e.target.value });
+    setLocalItem(prevItem => ({
+      ...prevItem,
+      start: e.target.value
+    }));
   };
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ duration: e.target.value });
+    setLocalItem(prevItem => ({
+      ...prevItem,
+      duration: e.target.value
+    }));
   };
   const [isEditing, setIsEditing] = useState(false);
+  const [localItem, setLocalItem] = useState(item);
   const handleEditClick = () => {
-    if (isEditing) onSave();
+    if (isEditing) onSave(localItem);
     setIsEditing(!isEditing);
   };
 
@@ -98,14 +107,14 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
         />
       </div>
       <div className="d-flex w-100">
-        <button className="btn btn-danger w-100 mx-1" onClick={onRemove}>
+        <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
           Remove
         </button>
         <button
           className={`btn w-100 mx-1 ${
             item.enabled ? "btn-secondary" : "btn-success"
           }`}
-          onClick={onToggleEnable}
+          // onClick={onToggleEnable}
         >
           {item.enabled ? "Disable" : "Enable"}
         </button>
