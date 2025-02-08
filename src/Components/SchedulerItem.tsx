@@ -6,11 +6,13 @@ import { FloppyFill } from "react-bootstrap-icons";
 
 export interface SchedulerItemProps {
   id: number;
+  event_id: number;
   weekday: string;
   start: string;
   duration: string;
   enabled: boolean;
   on: boolean;
+  name: string;
 }
 
 interface SchedulerItemComponentProps {
@@ -47,6 +49,13 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
       duration: e.target.value
     }));
   };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalItem(prevItem => ({
+      ...prevItem,
+      name: e.target.value
+    }));
+  }
   const [isEditing, setIsEditing] = useState(false);
   const [localItem, setLocalItem] = useState(item);
   const handleEditClick = () => {
@@ -57,17 +66,42 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   return (
     <div
       className={`list-group-item ${
-        isEditing ? "bg-warning" : ""
-      } d-flex flex-column align-items-start m-2 border p-2 rounded p-2`}
-    >
+        isEditing ? "border-primary" : ""
+      } d-flex flex-column align-items-start m-2 border p-2 rounded p-2`}>
+      <div className="d-flex flex-column align-items-center w-100 mb-3">
+        <div className="d-flex align-items-center w-100 mb-1">
+          <label className="text-muted w-auto mx-2"> ID: {item.id}</label>
+          <label className="text-muted w-auto"> Name: </label>
+          <input
+            title="name"
+            type="text"
+            className={`w-auto mx-1 ${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
+            value={localItem.name}
+            onChange={handleNameChange}
+            disabled={!isEditing} 
+          />
+        </div>
+        <div className="d-flex align-items-center w-100 mb-1">
+          <label className="text-muted w-auto"> Event: </label>
+          <input
+            title="eventID"
+            type="text"
+            className={`w-auto mx-1 ${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
+            value={localItem.event_id}
+            onChange={handleNameChange}
+            disabled={!isEditing} 
+          />
+        </div>
+      </div>
+      
       <div className="d-flex align-items-center w-100 mb-3">
         <div className="d-flex flex-column mx-3">
           <label>Start: </label>
           <input
             title="Start"
             type="time"
-            className="form-control"
-            value={item.start}
+            className={`${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
+            value={localItem.start}
             onChange={handleStartTimeChange}
             disabled={!isEditing}
           />
@@ -77,8 +111,8 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
           <input
             title="Duration"
             type="time"
-            className="form-control "
-            value={item.duration}
+            className={`${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
+            value={localItem.duration}
             onChange={handleDurationChange}
             disabled={!isEditing}
           />
