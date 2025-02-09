@@ -18,6 +18,7 @@ const Home = () => {
         <Widget title="Setup Valves" info="Connect to a Wired / Wireless Valve" link="/" bgColor="#ffcc99" />
         <Widget title="System Region" info="Configure System Timezone" link="/" bgColor="#cccc99" />
         <Widget title="Event Manager" info="Link Subsystems Based on Events" link="/event-manager" bgColor="#cccc66" />
+        <Widget title="Manage I/Os" info="Setup GPIOs and link them to events!" link="/pin-manager" bgColor="#bbdd88" />
       </div>
     </div>
     </>

@@ -6,6 +6,7 @@ import WifiSettings from "./pages/WifiSettings";
 import FirebaseSettings from "./pages/FirebaseSettings";
 import TempSensorSettings from "./pages/TempSensorSettings";
 import EventManagerPage from './pages/EventManagerPage';
+import PinManagerPage from './pages/PinManagerPage';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/FirebaseSettings" element={<FirebaseSettings/>}/>
         <Route path="/TempSensorSettings" element={<TempSensorSettings/>}/>
         <Route path="/event-manager" element={<EventManagerPage/>}/>
+        <Route path="/Pin-manager" element={<PinManagerPage/>}/>
       </Routes>
     </Router>
   );
