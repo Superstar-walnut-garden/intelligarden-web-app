@@ -26,6 +26,7 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
       id: nextId(),
+      event_id: -1,
       weekday: "0000000",
       start: "00:00",
       duration: "01:30",
