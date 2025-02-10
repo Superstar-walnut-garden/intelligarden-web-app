@@ -20,14 +20,14 @@ const PumpSettings: React.FC = () => {
 
   
   useEffect(() => {
-    axios.get<Event[]>('http://localhost:3000/getEventList').then((response) => {
+    axios.get<Event[]>('/getEventList').then((response) => {
       setEvents(response.data);
     });
   }, []);
 
   const fetchScheduleList = async () => {
     try {
-      const response = await axios.get<SchedulerItemProps[]>('http://localhost:3000/getScheduleList');
+      const response = await axios.get<SchedulerItemProps[]>('/getScheduleList');
       setSchedulerItems(response.data);
     } catch (error) {
       console.error('Error fetching schedule list:', error);
@@ -52,7 +52,7 @@ const PumpSettings: React.FC = () => {
     
     const newSchedule = { ...item };
     try {
-      await axios.post('http://localhost:3000/createSchedule', newSchedule);
+      await axios.post('/createSchedule', newSchedule);
     } catch (error) {
       console.error('Error creating schedule:', error);
     }
@@ -61,7 +61,7 @@ const PumpSettings: React.FC = () => {
 
   const deleteSchedule = async (id: number) => {
     try {
-      await axios.post('http://localhost:3000/deleteSchedule', { id });
+      await axios.post('/deleteSchedule', { id });
     } catch (error) {
       console.error('Error deleting schedule:', error);
     }
@@ -70,7 +70,7 @@ const PumpSettings: React.FC = () => {
 
   const modifySchedule = async (id: number, updatedItem: Partial<SchedulerItemProps>) => {
     try {
-      await axios.post('http://localhost:3000/modifySchedule', { id, ...updatedItem });
+      await axios.post('/modifySchedule', { id, ...updatedItem });
       setSchedulerItems(schedulerItems.map(item => (item.id === id ? { ...item, ...updatedItem } : item)));
     } catch (error) {
       console.error('Error modifying schedule:', error);

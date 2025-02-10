@@ -13,7 +13,7 @@ const EventManager: React.FC = () => {
   const [newEventName, setNewEventName] = useState<string>('');
 
   useEffect(() => {
-    axios.get<Event[]>('http://localhost:3000/getEventList').then((response) => {
+    axios.get<Event[]>('/getEventList').then((response) => {
       setEvents(response.data);
     });
   }, []);
@@ -21,20 +21,20 @@ const EventManager: React.FC = () => {
   const createEvent = () => {
     const newId = events.length > 0 ? Math.max(...events.map(event => event.id)) + 1 : 1;
     const newEvent = { id: newId, name: newEventName, flag: false, occupied: false };
-    axios.post('http://localhost:3000/createEvent', newEvent).then(() => {
+    axios.post('/createEvent', newEvent).then(() => {
       setEvents([...events, newEvent]);
       setNewEventName('');
     });
   };
 
   const deleteEvent = (id: number) => {
-    axios.post('http://localhost:3000/deleteEvent', { id }).then(() => {
+    axios.post('/deleteEvent', { id }).then(() => {
       setEvents(events.filter(event => event.id !== id));
     });
   };
 
   const modifyEvent = (id: number, name: string) => {
-    axios.post('http://localhost:3000/modifyEvent', { id, name }).then(() => {
+    axios.post('/modifyEvent', { id, name }).then(() => {
       setEvents(events.map(event => (event.id === id ? { ...event, name } : event)));
     });
   };

@@ -14,14 +14,14 @@ const PinManagerPage: React.FC = () => {
 
   
   useEffect(() => {
-    axios.get<Event[]>('http://localhost:3000/getEventList').then((response) => {
+    axios.get<Event[]>('/getEventList').then((response) => {
       setEvents(response.data);
     });
   }, []);
 
   const fetchList = async () => {
     try {
-      const response = await axios.get<GPIOItemProps[]>('http://localhost:3000/getGPIOList');
+      const response = await axios.get<GPIOItemProps[]>('/getGPIOList');
       setGPIOItems(response.data);
     } catch (error) {
       console.error('Error fetching schedule list:', error);
@@ -31,7 +31,7 @@ const PinManagerPage: React.FC = () => {
   const createGPIO = async (newIO: GPIOItemProps) => {
     const newIOData = { ...newIO };
     try {
-      await axios.post('http://localhost:3000/createGPIO', newIOData);
+      await axios.post('/createGPIO', newIOData);
     } catch (error) {
       console.error('Error creating GPIO:', error);
     }
@@ -40,7 +40,7 @@ const PinManagerPage: React.FC = () => {
 
   const deleteGPIO = async (id: number) => {
     try {
-      await axios.post('http://localhost:3000/deleteGPIO', { id });
+      await axios.post('/deleteGPIO', { id });
     } catch (error) {
       console.error('Error deleting GPIO:', error);
     }
@@ -49,7 +49,7 @@ const PinManagerPage: React.FC = () => {
 
   const modifyGPIO = async (updatedItem: GPIOItemProps) => {
     try {
-      await axios.post('http://localhost:3000/modifyGPIO', {...updatedItem });
+      await axios.post('/modifyGPIO', {...updatedItem });
     } catch (error) {
       console.error('Error modifying GPIO:', error);
     }
