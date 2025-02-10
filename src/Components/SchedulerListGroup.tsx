@@ -26,8 +26,9 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
       id: nextId(),
+      name: "Untitled Schedule",
       event_id: -1,
-      weekday: "0000000",
+      weekday: "1100000",
       start: "00:00",
       duration: "01:30",
       enabled: true,
@@ -41,13 +42,11 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   };
 
   function nextId() {
-    let unReservedId= 0;
-    items.map((item) => {// search
-    if(unReservedId <= item.id){
-      unReservedId = item.id + 1;
+    let newId = 1;
+    while (items.some(item => item.id === newId)) {
+      newId++;
     }
-    });
-    return unReservedId;
+    return newId;
   }
 
   
@@ -55,29 +54,29 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     onSave(item);
   }
 
-  const getWeekdayValue = (weekday: string) => {
+  const getWeekdayName = (weekday: string) => {
     let index = 0;
-    for (let i = 0; i < 7; i++) {
-      if (weekday[i] === "1") index = i;
-    }
-    return index;
-  };
-
-  const getNextScheduledDay = (weekday: string, currentWeekday: number) => {
-    for (let i = 0; i < 7; i++) {
-      const dayIndex = (currentWeekday + i) % 7;
-      if (weekday[dayIndex] === "1") {
-        return dayIndex;
+    let foundWeekday: string = "Unknown";
+    if(weekday) {
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      for (let i = 0; i < 7; i++) {
+        if (weekday[i] === "1") index = i;
       }
+      foundWeekday = days[index];
     }
-    return -1; // In case no valid day is found
+    return foundWeekday
   };
 
   return (
     <div
-      className="d-flex flex-column align-items-center mb-3 border p-2 rounded p-2"
+      className="d-flex flex-column align-items-center mb-3 border p-2 rounded p-2 bg-light"
       style={{ width: "fit-content", height: "fit-content" }}
     >
+      <div className="d-flex align-items-center w-100">
+        <label className="text-muted w-auto mx-2"> Time: {currentTime}</label>
+        <label className="text-muted w-auto mx-2"> Weekday: {getWeekdayName(currentWeekday)}</label>
+        <label className="text-muted w-auto mx-2"> Date: </label>
+      </div>
       <div
         className="list-group overflow-auto"
         style={{ maxHeight: "400px", width: "fit-content" }}

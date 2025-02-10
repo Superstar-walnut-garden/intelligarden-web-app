@@ -48,12 +48,9 @@ const PumpSettings: React.FC = () => {
     }
   };
 
-  const createSchedule = async () => {
-    let newId = 1;
-    while (schedulerItems.some(item => item.id === newId)) {
-      newId++;
-    }
-    const newSchedule = { id: newId, weekday: "1111111", start: "20:30", duration: "01:30", enabled: true, on: false };
+  const createSchedule = async (item: SchedulerItemProps) => {
+    
+    const newSchedule = { ...item };
     try {
       await axios.post('http://localhost:3000/createSchedule', newSchedule);
     } catch (error) {

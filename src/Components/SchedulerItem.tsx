@@ -63,7 +63,7 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLocalItem(prevItem => ({
       ...prevItem,
-      event_id: e.target.value
+      event_id: Number(e.target.value)
     }));
   }; 
 
