@@ -4,7 +4,7 @@ import axios from 'axios';
 export interface Event {
   id: number;
   name: string;
-  flag: boolean;
+  status: boolean;
   occupied: boolean;
 }
 
@@ -20,7 +20,7 @@ const EventManager: React.FC = () => {
 
   const createEvent = () => {
     const newId = events.length > 0 ? Math.max(...events.map(event => event.id)) + 1 : 1;
-    const newEvent = { id: newId, name: newEventName, flag: false, occupied: false };
+    const newEvent = { id: newId, name: newEventName, status: false, occupied: false };
     axios.post('/createEvent', newEvent).then(() => {
       setEvents([...events, newEvent]);
       setNewEventName('');
@@ -59,7 +59,7 @@ const EventManager: React.FC = () => {
               onChange={(e) => modifyEvent(event.id, e.target.value)}
             />
             <button onClick={() => deleteEvent(event.id)}>Delete</button>
-            <span>Flag: {event.flag ? '1' : '0'}</span>
+            <span>status: {event.status ? '1' : '0'}</span>
             <span>Occupied: {event.occupied ? '1' : '0'}</span>
           </li>
         ))}
