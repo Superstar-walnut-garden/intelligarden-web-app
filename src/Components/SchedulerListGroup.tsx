@@ -32,7 +32,8 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
       start: "00:00",
       duration: "01:30",
       enabled: true,
-      on: false,
+      status: false,
+      mode: "weekly",
     };
     onCreate(newItem);
   };

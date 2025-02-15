@@ -12,8 +12,9 @@ export interface SchedulerItemProps {
   start: string;
   duration: string;
   enabled: boolean;
-  on: boolean;
+  status: boolean;
   name: string;
+  mode: string;
 }
 
 interface SchedulerItemComponentProps {
@@ -58,12 +59,18 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
       ...prevItem,
       name: e.target.value
     }));
-  }
+  };
 
   const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLocalItem(prevItem => ({
       ...prevItem,
       event_id: Number(e.target.value)
+    }));
+  }; 
+  const handleModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLocalItem(prevItem => ({
+      ...prevItem,
+      mode: String(e.target.value)
     }));
   }; 
 
@@ -107,6 +114,21 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
                 {event.name}
               </option>
             ))}
+          </select>
+        </div>
+        <div className="d-flex align-items-center w-100 mb-1">
+          <label className="text-muted w-auto mx-2"> Mode: </label>
+          <select
+            title="mode"
+            className={`w-auto mx-1 ${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
+            value={localItem.mode}
+            onChange={handleModeChange}
+            disabled={!isEditing}
+          >
+            <option value={"monthly"} disabled>Monthly(not implemented)</option>
+            <option value={"weekly"}>Weekly</option>
+            <option value={"daily"} disabled>Daily(not implemented)</option>
+            <option value={"hourly"}>Hourly</option>
           </select>
         </div>
       </div>
