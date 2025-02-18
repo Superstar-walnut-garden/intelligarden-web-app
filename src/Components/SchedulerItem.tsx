@@ -135,7 +135,7 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
       
       <div className="d-flex align-items-center w-100 mb-3">
         <div className="d-flex flex-column mx-3">
-          <label>Start: </label>
+          <label>{localItem.mode === "weekly" ? 'Start:' : 'Interval'} </label>
           <input
             title="Start"
             type="time"
@@ -171,14 +171,14 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
           </button>
         </div>
       </div>
-      <div className="d-flex flex-column align-items-start mb-3">
+      {(localItem.mode === "weekly") && <div className="d-flex flex-column align-items-start mb-3 ">
         <label className="mx-3"> Week Days: </label>
         <WeekSelector
           initialSelectedDays={item.weekday}
           onSelectionChange={handleWeekSelectorChange}
           isEnabled={isEditing}
         />
-      </div>
+      </div>}
       <div className="d-flex w-100">
         <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
           Remove
