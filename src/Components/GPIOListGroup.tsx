@@ -2,7 +2,7 @@ import React from "react";
 import GPIOItem from "./GPIOItem";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { GPIOItemProps } from "./GPIOItem";
-import { Event } from "./EventManager";
+import {Event} from "../Components/EventItem";
 
 interface GPIOListGroupProps {
   items: GPIOItemProps[];
