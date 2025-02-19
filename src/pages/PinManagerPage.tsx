@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import GPIOListGroup from "../Components/GPIOListGroup";
 import TitleBar from "../Components/TitleBar";
-import axios from 'axios';
 import { GPIOItemProps } from "../Components/GPIOItem";
-import { Event } from "../Components/EventManager";
+import {Event} from "../Components/EventItem";
+import * as ApiService from "../api/apiService";
 
 const PinManagerPage: React.FC = () => {
   const [GPIOItems, setGPIOItems] = useState<GPIOItemProps[]>([]);
@@ -14,15 +14,16 @@ const PinManagerPage: React.FC = () => {
 
   
   useEffect(() => {
-    axios.get<Event[]>('/getEventList').then((response) => {
-      setEvents(response.data);
-    });
+    const getEventList = async () => {
+      setEvents(await ApiService.getEventList());
+    };
+    getEventList();
   }, []);
 
   const fetchList = async () => {
     try {
-      const response = await axios.get<GPIOItemProps[]>('/getGPIOList');
-      setGPIOItems(response.data);
+      const data = await ApiService.getGPIOList();
+      setGPIOItems(data);
     } catch (error) {
       console.error('Error fetching schedule list:', error);
     }
@@ -31,7 +32,7 @@ const PinManagerPage: React.FC = () => {
   const createGPIO = async (newIO: GPIOItemProps) => {
     const newIOData = { ...newIO };
     try {
-      await axios.post('/createGPIO', newIOData);
+      await ApiService.createGPIO(newIOData);
     } catch (error) {
       console.error('Error creating GPIO:', error);
     }
@@ -40,7 +41,7 @@ const PinManagerPage: React.FC = () => {
 
   const deleteGPIO = async (id: number) => {
     try {
-      await axios.post('/deleteGPIO', { id });
+      await ApiService.deleteEvent(id);
     } catch (error) {
       console.error('Error deleting GPIO:', error);
     }
@@ -49,7 +50,7 @@ const PinManagerPage: React.FC = () => {
 
   const modifyGPIO = async (updatedItem: GPIOItemProps) => {
     try {
-      await axios.post('/modifyGPIO', {...updatedItem });
+      await ApiService.modifyGPIO(updatedItem);
     } catch (error) {
       console.error('Error modifying GPIO:', error);
     }
