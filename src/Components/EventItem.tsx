@@ -44,23 +44,9 @@ const EventItem: React.FC<EventItemComponentProps> = ({
     }));
   }; 
 
-  const handleModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocalItem(prevItem => ({
-      ...prevItem,
-      mode: Number(e.target.value)
-    }));
-  }; 
-
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalItem(prevItem => ({
-      ...prevItem,
-      id: Number(e.target.value)
-    }));
-  }; 
-
   const [isEditing, setIsEditing] = useState(false);
   const [localItem, setLocalItem] = useState(item);
-  const [enableMating, setEnableMating] = React.useState(localItem.event_id === -1);
+  const [enableMating, setEnableMating] = React.useState(localItem.event_id !== -1);
   const handleEditClick = () => {
     if (isEditing) onSave(localItem);
     setIsEditing(!isEditing);
