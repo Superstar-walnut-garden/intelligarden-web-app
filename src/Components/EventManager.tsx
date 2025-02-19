@@ -1,70 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-export interface Event {
-  id: number;
-  name: string;
-  status: boolean;
-  occupied: boolean;
-}
+import EventListGroup from './EventListGroup';
+import { Event } from './EventItem';
+import * as ApiService from '../api/apiService';
+import TitleBar from './TitleBar';
 
 const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [newEventName, setNewEventName] = useState<string>('');
 
   useEffect(() => {
-    axios.get<Event[]>('/getEventList').then((response) => {
-      setEvents(response.data);
-    });
+    getList();
   }, []);
 
-  const createEvent = () => {
-    const newId = events.length > 0 ? Math.max(...events.map(event => event.id)) + 1 : 1;
-    const newEvent = { id: newId, name: newEventName, status: false, occupied: false };
-    axios.post('/createEvent', newEvent).then(() => {
-      setEvents([...events, newEvent]);
-      setNewEventName('');
-    });
+  const getList = async () => {
+    try {
+      const result = await ApiService.getEventList();
+      setEvents(result);
+    } catch (error) {
+      console.error('Error fetching event list:', error);
+    }
   };
 
-  const deleteEvent = (id: number) => {
-    axios.post('/deleteEvent', { id }).then(() => {
-      setEvents(events.filter(event => event.id !== id));
-    });
+  const createEvent = async(event: Event) => {
+    try {
+      ApiService.createEvent(event);
+      getList();
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
   };
 
-  const modifyEvent = (id: number, name: string) => {
-    axios.post('/modifyEvent', { id, name }).then(() => {
-      setEvents(events.map(event => (event.id === id ? { ...event, name } : event)));
-    });
+  const deleteEvent = async (id: number) => {
+    try {
+      await ApiService.deleteEvent(id);
+      getList();
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+  };
+
+  const modifyEvent = async (event: Event) => {
+    try {
+      await ApiService.modifyEvent(event);
+      getList();
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
   };
 
   return (
-    <div>
-      <h1>Event Manager</h1>
-      <input
-        type="text"
-        value={newEventName}
-        onChange={(e) => setNewEventName(e.target.value)}
-        placeholder="New Event Name"
-      />
-      <button onClick={createEvent}>Create Event</button>
-      <ul>
-        {events.map(event => (
-          <li key={event.id}>
-            <input
-              type="text"
-              placeholder='id'
-              value={event.name}
-              onChange={(e) => modifyEvent(event.id, e.target.value)}
-            />
-            <button onClick={() => deleteEvent(event.id)}>Delete</button>
-            <span>status: {event.status ? '1' : '0'}</span>
-            <span>Occupied: {event.occupied ? '1' : '0'}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+    <TitleBar title="Event Manager"/>
+    <div className="d-flex flex-column align-items-center">
+      <EventListGroup
+        items={events}
+        onCreate={createEvent}
+        onRemove={deleteEvent}
+        onSave={modifyEvent}/>
+      </div>
+    </>
   );
 };
 
