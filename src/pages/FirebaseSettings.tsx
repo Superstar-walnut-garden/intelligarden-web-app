@@ -1,17 +1,9 @@
 // src/components/WifiConfigForm.tsx
 import React, { useState, useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import TitleBar from "../Components/TitleBar";
-
-interface FirebaseSettingsData {
-  apiKey: string;
-  databaseURL: string;
-  userEmail: string;
-  userPassword: string;
-  databaseRootName: string;
-  enabled: boolean;
-}
+import * as ApiService from "../api/apiService"
+import { FirebaseSettingsData } from "../api/apiService";
 
 const FirebaseSettings: React.FC = () => {
   const [firebaseSettingsData, setFirebaseSettingsData] =
@@ -24,37 +16,20 @@ const FirebaseSettings: React.FC = () => {
       enabled: false,
     });
 
+
   useEffect(() => {
-    axios
-      .get<FirebaseSettingsData>("/getFirebaseData")
-      .then((response: AxiosResponse<FirebaseSettingsData>) => {
-        setFirebaseSettingsData(response.data);
-        setFirebaseEnabled(response.data.enabled);
-      });
+    const getData = async () => {
+      setFirebaseSettingsData(await ApiService.getFirebaseData());
+      setFirebaseEnabled(firebaseSettingsData.enabled);
+    };
+    getData();
   }, []);
-  const [firebaseEnabled, setFirebaseEnabled] = useState<boolean>(false);
+
+  const [firebaseEnabled, setFirebaseEnabled] = useState<boolean>(firebaseSettingsData.enabled);
 
   const handleSave = () => {
-    const payload = {
-      apiKey: firebaseSettingsData.apiKey,
-      databaseURL: firebaseSettingsData.databaseURL,
-      userEmail: firebaseSettingsData.userEmail,
-      userPassword: firebaseSettingsData.userPassword,
-      databaseRootName: firebaseSettingsData.databaseRootName,
-      enabled: firebaseEnabled,
-    };
-
-    console.log("Payload:", payload); // Debugging line
-
-    axios
-      .post("/setFirebaseData", payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response: AxiosResponse) => {
-        console.log("Firebase config saved:", response.data);
-      });
+    firebaseSettingsData.enabled = firebaseEnabled;
+    ApiService.setFirebaseData(firebaseSettingsData);
   };
   const handleEnableToggle = () => {
     setFirebaseEnabled(!firebaseEnabled);
