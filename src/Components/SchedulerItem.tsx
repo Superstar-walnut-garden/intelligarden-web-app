@@ -3,7 +3,7 @@ import WeekSelector from "./WeekSelector";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
-import {Event} from "./EventManager";
+import {Event} from "../Components/EventItem";
 
 export interface SchedulerItemProps {
   id: number;

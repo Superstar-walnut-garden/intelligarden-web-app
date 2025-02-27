@@ -2,7 +2,7 @@ import React from "react";
 import SchedulerItem from "./SchedulerItem";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SchedulerItemProps } from "./SchedulerItem";
-import { Event } from "./EventManager";
+import {Event} from "../Components/EventItem";
 
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
