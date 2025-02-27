@@ -1,18 +1,8 @@
 // src/components/WifiConfigForm.tsx
 import React, { useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-
-interface WifiState {
-  ssid: string;
-  password: string;
-  dhcpEnabled: boolean;
-  ip?: string;
-  subnet?: string;
-  gateway?: string;
-  primaryDNS?: string;
-  secondaryDNS?: string;
-}
+import * as ApiService from "../api/apiService";
+import { WifiState } from "../api/apiService";
 
 const WifiConfigForm: React.FC = () => {
   const [wifiState, setWifiState] = useState<WifiState>({
@@ -20,40 +10,23 @@ const WifiConfigForm: React.FC = () => {
     password: '',
     dhcpEnabled: false,
   });
-  const [dhcpEnabled, setDhcpEnabled] = useState<boolean>(true);
 
   useEffect(() => {
-    axios.get<WifiState>('/getWifiState').then((response: AxiosResponse<WifiState>) => {
-      setWifiState(response.data);
-      // setDhcpEnabled(response.data.dhcpEnabled);
-    });
+    const getData = async () => {
+      setWifiState(await ApiService.getWifiState());
+    };
+    getData();
   }, []);
+
+  const [dhcpEnabled, setDhcpEnabled] = useState<boolean>(wifiState.dhcpEnabled);
 
   const handleDhcpToggle = () => {
     setDhcpEnabled(!dhcpEnabled);
   };
 
   const handleSaveWifiConfig = () => {
-    const payload = {
-      ssid: wifiState.ssid,
-      password: wifiState.password,
-      dhcpEnabled,
-      ip: dhcpEnabled ? '' : wifiState.ip,
-      gateway: dhcpEnabled ? '' : wifiState.gateway,
-      subnet: dhcpEnabled ? '' : wifiState.subnet,
-      primaryDNS: dhcpEnabled ? '' : wifiState.primaryDNS,
-      secondaryDNS: dhcpEnabled ? '' : wifiState.secondaryDNS
-    };
-
-    console.log('Payload:', payload); // Debugging line
-
-    axios.post('/setWifiConfig', payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response: AxiosResponse) => {
-      console.log('WiFi config saved:', response.data);
-    });
+    ApiService.setWifiConfig(wifiState);
+    console.log('WiFi config saved');
   };
 
   return (
