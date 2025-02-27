@@ -6,6 +6,11 @@ import { GPIOItemProps } from "../Components/GPIOItem";
 const apiBaseUrl = "/api";
 
 // -----------------------
+// Display API
+// -----------------------
+
+
+// -----------------------
 // Events API
 // -----------------------
 export const getEventList = async (): Promise<Event[]> => {
@@ -160,4 +165,20 @@ export const deleteGPIO = async (id: number): Promise<void> => {
 
 export const modifyGPIO = async (item: GPIOItemProps): Promise<void> => {
   await axios.post(apiBaseUrl + "/modifyGPIO", item);
+};
+
+// -----------------------
+// Display API
+// -----------------------
+export interface DisplayConfig {
+  type: string;
+}
+
+export const getDisplayConfig = async (): Promise<DisplayConfig> => {
+  const response = await axios.get<DisplayConfig>(apiBaseUrl + "/getDisplayConfig");
+  return response.data;
+};
+
+export const setDisplayConfig = async (config: DisplayConfig): Promise<void> => {
+  await axios.post(apiBaseUrl + "/setDisplayConfig", config);
 };
