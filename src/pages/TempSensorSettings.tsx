@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as ApiService from "../api/apiService"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface SensorData {
@@ -43,8 +44,8 @@ const SensorPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/getSensorList');
-        const data: SensorData = await response.json();
+        const response = await ApiService.getSensorList();
+        const data: SensorData = response;
         if (!deepEqual(lastData, data)) {
           setLastData(data);
           setSensorData(data);
@@ -59,35 +60,20 @@ const SensorPage: React.FC = () => {
   }, [lastData]);
 
   const saveData = async () => {
-    try {
-      const response = await fetch('/setSensorList', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sensorData)
-      });
-      if (response.ok) {
-        showNotification('Data saved successfully!');
-      } else {
-        alert('Failed to save data.');
-      }
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
+    ApiService.setSensorList(sensorData);
   };
 
-  const showNotification = (message: string) => {
-    const notification = document.getElementById('save-button');
-    if (notification) {
-      notification.textContent = message;
-      setTimeout(() => {
-        if (notification) {
-          notification.textContent = "Save";
-        }
-      }, 2000);
-    }
-  };
+  // const showNotification = (message: string) => {
+  //   const notification = document.getElementById('save-button');
+  //   if (notification) {
+  //     notification.textContent = message;
+  //     setTimeout(() => {
+  //       if (notification) {
+  //         notification.textContent = "Save";
+  //       }
+  //     }, 2000);
+  //   }
+  // };
 
   const handleInputChange = (address: string, value: string) => {
     setSensorData({

@@ -1,11 +1,15 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PumpSettings from "./pages/PumpSettings";
 import Home from "./pages/Home";
 import WifiSettings from "./pages/WifiSettings";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FirebaseSettings from "./pages/FirebaseSettings";
-import TempSensorSettings from "./pages/TempSensorSettings"
+import TempSensorSettings from "./pages/TempSensorSettings";
+import EventManagerPage from './pages/EventManagerPage';
+import PinManagerPage from './pages/PinManagerPage';
+import DisplaySettings from './pages/DisplaySettings';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <Routes>
@@ -14,9 +18,12 @@ function App() {
         <Route path="/WifiSettings" element={<WifiSettings/>}/>
         <Route path="/FirebaseSettings" element={<FirebaseSettings/>}/>
         <Route path="/TempSensorSettings" element={<TempSensorSettings/>}/>
+        <Route path="/event-manager" element={<EventManagerPage/>}/>
+        <Route path="/Pin-manager" element={<PinManagerPage/>}/>
+        <Route path="/DisplaySettings" element={<DisplaySettings/>}/>
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

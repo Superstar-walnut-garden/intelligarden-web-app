@@ -1,12 +1,8 @@
 // src/components/HotspotConfigForm.tsx
 import React, { useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-
-interface HotspotConfig {
-  ssid: string;
-  password: string;
-}
+import * as ApiService from "../api/apiService";
+import { HotspotConfig } from "../api/apiService";
 
 const HotspotConfigForm: React.FC = () => {
   const [hotspotConfig, setHotspotConfig] = useState<HotspotConfig>({
@@ -15,26 +11,15 @@ const HotspotConfigForm: React.FC = () => {
   });
 
   useEffect(() => {
-    axios.get<HotspotConfig>('/getHotspotConfig').then((response: AxiosResponse<HotspotConfig>) => {
-      setHotspotConfig(response.data);
-    });
+    const getData = async () => {
+      setHotspotConfig(await ApiService.getHotspotConfig());
+    }
+    getData();
   }, []);
 
   const handleSaveHotspotConfig = () => {
-    const payload = {
-      ssid: hotspotConfig.ssid,
-      password: hotspotConfig.password,
-    };
-
-    console.log('Payload:', payload); // Debugging line
-
-    axios.post('/setHotspotConfig', payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response: AxiosResponse) => {
-      console.log('Hotspot config saved:', response.data);
-    });
+    ApiService.setHotspotConfig(hotspotConfig);
+    console.log('Hotspot config saved');
   };
 
   return (

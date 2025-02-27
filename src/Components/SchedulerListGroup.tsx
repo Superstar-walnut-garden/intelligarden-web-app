@@ -1,151 +1,94 @@
 import React from "react";
 import SchedulerItem from "./SchedulerItem";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-interface SchedulerItemProps {
-  id: number;
-  weekday: string;
-  start: string;
-  duration: string;
-  enabled: boolean;
-  on: boolean;
-}
+import { SchedulerItemProps } from "./SchedulerItem";
+import {Event} from "../Components/EventItem";
 
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
-  onChange: (items: SchedulerItemProps[]) => void;
-  onSave: () => void;
+  onCreate: (item: SchedulerItemProps) => void;
+  onSave: (item: SchedulerItemProps) => void;
+  onRemove: (id: number) => void;
   currentTime: string;
   currentWeekday: string;
+  eventList: Event[];
 }
 
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   items,
-  onChange,
   onSave,
+  onCreate,
+  onRemove,
   currentTime,
   currentWeekday,
+  eventList,
 }) => {
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
       id: nextId(),
-      weekday: "0000000",
+      name: "Untitled Schedule",
+      event_id: -1,
+      weekday: "1100000",
       start: "00:00",
       duration: "01:30",
       enabled: true,
-      on: false,
+      status: false,
+      mode: "weekly",
     };
-    onChange([...items, newItem]);
-    onSave();
+    onCreate(newItem);
   };
 
   const handleRemoveItem = (id: number) => {
-    onChange(items.filter((item) => item.id !== id));
-    onSave();
+    onRemove(id);
   };
 
   function nextId() {
-    let unReservedId= 0;
-    items.map((item) => {// search
-    if(unReservedId <= item.id){
-      unReservedId = item.id + 1;
+    let newId = 1;
+    while (items.some(item => item.id === newId)) {
+      newId++;
     }
-    });
-    return unReservedId;
+    return newId;
   }
 
-  const handleToggleEnable = (id: number) => {
-    onChange(
-      sortedItems.map((item) =>
-        item.id === id ? { ...item, enabled: !item.enabled } : item
-      )
-    );
-    onSave();
-  };
-  const handleSave = () => {
-    onSave();
-  };
+  
+  const handleSave = (item: SchedulerItemProps) => {
+    onSave(item);
+  }
 
-  const handleItemChange = (
-    id: number,
-    updatedItem: Partial<SchedulerItemProps>
-  ) => {
-    onChange(
-      items.map((item) => (item.id === id ? { ...item, ...updatedItem } : item))
-    );
-  };
-
-  const getWeekdayValue = (weekday: string) => {
+  const getWeekdayName = (weekday: string) => {
     let index = 0;
-    for (let i = 0; i < 7; i++) {
-      if (weekday[i] === "1") index = i;
-    }
-    return index;
-  };
-
-  const getNextScheduledDay = (weekday: string, currentWeekday: number) => {
-    for (let i = 0; i < 7; i++) {
-      const dayIndex = (currentWeekday + i) % 7;
-      if (weekday[dayIndex] === "1") {
-        return dayIndex;
+    let foundWeekday: string = "Unknown";
+    if(weekday) {
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      for (let i = 0; i < 7; i++) {
+        if (weekday[i] === "1") index = i;
       }
+      foundWeekday = days[index];
     }
-    return -1; // In case no valid day is found
+    return foundWeekday
   };
-
-  const sortedItems = [...items].sort((a, b) => {
-    const currentTimeValue = new Date(`1970-01-01T${currentTime}`).getTime();
-
-    const aNextDay = getNextScheduledDay(
-      a.weekday,
-      getWeekdayValue(currentWeekday)
-    );
-    const bNextDay = getNextScheduledDay(
-      b.weekday,
-      getWeekdayValue(currentWeekday)
-    );
-
-    if (aNextDay !== bNextDay) {
-      return aNextDay - bNextDay;
-    }
-
-    const aTime = new Date(`1970-01-01T${a.start}`).getTime();
-    const bTime = new Date(`1970-01-01T${b.start}`).getTime();
-    // if (a.on === true) return 1;
-    // else if (b.on === true) return -1;
-    // else
-    if (
-      aNextDay === getWeekdayValue(currentWeekday) &&
-      aTime < currentTimeValue
-    ) {
-      return 1;
-    } else if (
-      bNextDay === getWeekdayValue(currentWeekday) &&
-      bTime < currentTimeValue
-    ) {
-      return -1;
-    } else {
-      return aTime - bTime;
-    }
-  });
 
   return (
     <div
-      className="d-flex flex-column align-items-center mb-3 border p-2 rounded p-2"
+      className="d-flex flex-column align-items-center mb-3 border p-2 rounded p-2 bg-light"
       style={{ width: "fit-content", height: "fit-content" }}
     >
+      <div className="d-flex align-items-center w-100">
+        <label className="text-muted w-auto mx-2"> Time: {currentTime}</label>
+        <label className="text-muted w-auto mx-2"> Weekday: {getWeekdayName(currentWeekday)}</label>
+        <label className="text-muted w-auto mx-2"> Date: </label>
+      </div>
       <div
         className="list-group overflow-auto"
         style={{ maxHeight: "400px", width: "fit-content" }}
       >
-        {sortedItems.map((item) => (
+        {items.map((item) => (
           <SchedulerItem
             key={item.id}
             item={item}
-            onRemove={() => handleRemoveItem(item.id)}
-            onToggleEnable={() => handleToggleEnable(item.id)}
-            onChange={(updatedItem) => handleItemChange(item.id, updatedItem)}
-            onSave={handleSave}
+            onRemove={(id) => handleRemoveItem(id)}
+            onSave={(updatedItem) => handleSave(updatedItem)}
+            eventList={eventList}
           />
         ))}
       </div>
