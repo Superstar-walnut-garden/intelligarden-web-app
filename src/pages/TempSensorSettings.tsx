@@ -63,17 +63,17 @@ const SensorPage: React.FC = () => {
     ApiService.setSensorList(sensorData);
   };
 
-  const showNotification = (message: string) => {
-    const notification = document.getElementById('save-button');
-    if (notification) {
-      notification.textContent = message;
-      setTimeout(() => {
-        if (notification) {
-          notification.textContent = "Save";
-        }
-      }, 2000);
-    }
-  };
+  // const showNotification = (message: string) => {
+  //   const notification = document.getElementById('save-button');
+  //   if (notification) {
+  //     notification.textContent = message;
+  //     setTimeout(() => {
+  //       if (notification) {
+  //         notification.textContent = "Save";
+  //       }
+  //     }, 2000);
+  //   }
+  // };
 
   const handleInputChange = (address: string, value: string) => {
     setSensorData({
