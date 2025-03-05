@@ -136,15 +136,24 @@ export const getCurrentTime = async (): Promise<CurrentTimeData> => {
 // -----------------------
 // Sensor API
 // -----------------------
+export interface TempSensorApiData {
+  id: number;
+  name: string;
+  status: boolean;
+  temp: number;
+}
+
 export const getSensorList = async (): Promise<any> => {
   const response = await axios.get(apiBaseUrl + "/getSensorList");
   return response.data;
 };
 
-export const setSensorList = async (sensorData: any): Promise<void> => {
-  await axios.post(apiBaseUrl + "/setSensorList", sensorData, {
-    headers: { "Content-Type": "application/json" }
-  });
+export const deleteSensor = async (id: number): Promise<void> => {
+  await axios.post(apiBaseUrl + "/deleteSensor", { id });
+};
+
+export const modifySensor = async (item: TempSensorApiData): Promise<void> => {
+  await axios.post(apiBaseUrl + "/modifySensor", item);
 };
 
 // -----------------------
@@ -181,4 +190,39 @@ export const getDisplayConfig = async (): Promise<DisplayConfig> => {
 
 export const setDisplayConfig = async (config: DisplayConfig): Promise<void> => {
   await axios.post(apiBaseUrl + "/setDisplayConfig", config);
+};
+
+// -----------------------
+// Thermostat API
+// -----------------------
+export interface ThermostatApiData {
+  id: number;
+  event_id: number;
+  heaterEvent_id: number;
+  coolerEvent_id: number;
+  sensor: string;
+  name: string;
+  setpoint: number;
+  altSetpoint: number;
+  hysteresis: number;
+  offset: number;
+  status: boolean;
+  enabled: boolean;
+}
+
+export const getThermostatList = async (): Promise<ThermostatApiData[]> => {
+  const response = await axios.get<ThermostatApiData[]>(apiBaseUrl + "/getThermostatList");
+  return response.data;
+};
+
+export const createThermostate = async (item: ThermostatApiData): Promise<void> => {
+  await axios.post(apiBaseUrl + "/createThermostat", item);
+};
+
+export const deleteThermostat = async (id: number): Promise<void> => {
+  await axios.post(apiBaseUrl + "/deleteThermostat", { id });
+};
+
+export const modifyThermostat = async (item: ThermostatApiData): Promise<void> => {
+  await axios.post(apiBaseUrl + "/modifyThermostat", item);
 };
