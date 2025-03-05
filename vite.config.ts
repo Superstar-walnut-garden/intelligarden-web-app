@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: mode === 'development' ? {
         '/api/': {
-          target: 'http://192.168.4.1/', // esp32 hotspot server ip
+          target: 'http://192.168.1.185/', // esp32 hotspot server ip
           changeOrigin: true,
           secure: false,
         },
