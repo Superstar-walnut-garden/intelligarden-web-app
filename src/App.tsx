@@ -8,6 +8,7 @@ import TempSensorSettings from "./pages/TempSensorSettings";
 import EventManagerPage from './pages/EventManagerPage';
 import PinManagerPage from './pages/PinManagerPage';
 import DisplaySettings from './pages/DisplaySettings';
+import ThermostatManagerPage from './pages/ThermostatManagerPage';
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
         <Route path="/event-manager" element={<EventManagerPage/>}/>
         <Route path="/Pin-manager" element={<PinManagerPage/>}/>
         <Route path="/DisplaySettings" element={<DisplaySettings/>}/>
+        <Route path="thermostat-manager" element={<ThermostatManagerPage/>}/>
       </Routes>
     </Router>
   );
