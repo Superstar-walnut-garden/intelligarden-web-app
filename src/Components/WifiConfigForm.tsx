@@ -26,6 +26,7 @@ const WifiConfigForm: React.FC = () => {
 
   const handleSaveWifiConfig = () => {
     ApiService.setWifiConfig(wifiState);
+    ApiService.rebootSystem();
     console.log('WiFi config saved');
   };
 
@@ -116,7 +117,7 @@ const WifiConfigForm: React.FC = () => {
         </>
       )}
       <Button variant="primary" onClick={handleSaveWifiConfig} className="mt-3">
-        Save
+        Save & Restart
       </Button>
     </Form>
   );

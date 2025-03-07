@@ -226,3 +226,10 @@ export const deleteThermostat = async (id: number): Promise<void> => {
 export const modifyThermostat = async (item: ThermostatApiData): Promise<void> => {
   await axios.post(apiBaseUrl + "/Thermostat/modify", item);
 };
+
+// -----------------------
+// System API
+// -----------------------
+export const rebootSystem = async (): Promise<void> => {
+  await axios.post(apiBaseUrl + "/restart", {});
+};
