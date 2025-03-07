@@ -41,7 +41,7 @@ const PinManagerPage: React.FC = () => {
 
   const deleteGPIO = async (id: number) => {
     try {
-      await ApiService.deleteEvent(id);
+      await ApiService.deleteGPIO(id);
     } catch (error) {
       console.error('Error deleting GPIO:', error);
     }
