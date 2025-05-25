@@ -23,7 +23,7 @@ const GPIOListGroup: React.FC<GPIOListGroupProps> = ({
     const input = window.prompt("Enter pin number:");
     if (input !== null) {
       const pin = Number(input);
-      if (pin > 0) {
+      if (pin >= 0) {
         const newItem: GPIOItemProps = {
           id: pin,
           mode: 1, // default mode is output!

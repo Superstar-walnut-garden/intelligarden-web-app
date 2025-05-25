@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import {Event} from "../Components/EventItem";
+import EventPicker from "../Components/EventPicker";
 
 export interface SchedulerItemProps {
   id: number;
@@ -15,6 +16,8 @@ export interface SchedulerItemProps {
   status: boolean;
   name: string;
   mode: string;
+  skipped: boolean;
+  skipEvent_id: number;
 }
 
 interface SchedulerItemComponentProps {
@@ -191,6 +194,19 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
         >
           {item.enabled ? "Disable" : "Enable"}
         </button>
+      </div>
+      <div className={`d-flex align-items-center w-100 mb-1 `}>
+        <label className="text-muted w-auto"> Cooler Event: </label>
+        <EventPicker
+          value={localItem.skipEvent_id}
+          onChange={(id: number) => {
+            setLocalItem(prevItem => ({
+              ...prevItem,
+              skipEvent_id: id
+            }));
+          }}
+          disabled={!isEditing}
+        />
       </div>
     </div>
   );
