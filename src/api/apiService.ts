@@ -57,6 +57,7 @@ export const setFirebaseData = async (payload: FirebaseSettingsData): Promise<vo
 // Wifi API
 // -----------------------
 export interface WifiState {
+  on: boolean;
   ssid: string;
   password: string;
   dhcpEnabled: boolean;
