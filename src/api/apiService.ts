@@ -14,20 +14,20 @@ const apiBaseUrl = "/api";
 // Events API
 // -----------------------
 export const getEventList = async (): Promise<Event[]> => {
-  const response = await axios.get<Event[]>(apiBaseUrl + '/getEventList');
+  const response = await axios.get<Event[]>(apiBaseUrl + '/Event/get');
   return response.data;
 };
 
 export const createEvent = async (newEvent: Event): Promise<void> => {
-  await axios.post(apiBaseUrl + '/createEvent', newEvent);
+  await axios.post(apiBaseUrl + '/Event/create', newEvent);
 };
 
 export const deleteEvent = async (id: number): Promise<void> => {
-  await axios.post(apiBaseUrl + '/deleteEvent', { id });
+  await axios.post(apiBaseUrl + '/Event/delete', { id });
 };
 
 export const modifyEvent = async (event: Event): Promise<void> => {
-  await axios.post(apiBaseUrl + '/modifyEvent', { ...event });
+  await axios.post(apiBaseUrl + '/Event/modify', { ...event });
 };
 
 // -----------------------
@@ -57,6 +57,7 @@ export const setFirebaseData = async (payload: FirebaseSettingsData): Promise<vo
 // Wifi API
 // -----------------------
 export interface WifiState {
+  on: boolean;
   ssid: string;
   password: string;
   dhcpEnabled: boolean;
@@ -101,23 +102,23 @@ export const setHotspotConfig = async (payload: HotspotConfig): Promise<void> =>
 // Schedule API
 // -----------------------
 export const getScheduleList = async (): Promise<SchedulerItemProps[]> => {
-  const response = await axios.get<SchedulerItemProps[]>(apiBaseUrl + "/getScheduleList");
+  const response = await axios.get<SchedulerItemProps[]>(apiBaseUrl + "/Scheduler/get");
   return response.data;
 };
 
 export const createSchedule = async (item: SchedulerItemProps): Promise<void> => {
-  await axios.post(apiBaseUrl + "/createSchedule", item);
+  await axios.post(apiBaseUrl + "/Scheduler/create", item);
 };
 
 export const deleteSchedule = async (id: number): Promise<void> => {
-  await axios.post(apiBaseUrl + "/deleteSchedule", { id });
+  await axios.post(apiBaseUrl + "/Scheduler/delete", { id });
 };
 
 export const modifySchedule = async (
   id: number,
   updatedItem: Partial<SchedulerItemProps>
 ): Promise<void> => {
-  await axios.post(apiBaseUrl + "/modifySchedule", { id, ...updatedItem });
+  await axios.post(apiBaseUrl + "/Scheduler/modify", { id, ...updatedItem });
 };
 
 // -----------------------
@@ -144,36 +145,36 @@ export interface TempSensorApiData {
 }
 
 export const getSensorList = async (): Promise<any> => {
-  const response = await axios.get(apiBaseUrl + "/getSensorList");
+  const response = await axios.get(apiBaseUrl + "/TempSensor/get");
   return response.data;
 };
 
 export const deleteSensor = async (id: number): Promise<void> => {
-  await axios.post(apiBaseUrl + "/deleteSensor", { id });
+  await axios.post(apiBaseUrl + "/TempSensor/delete", { id });
 };
 
 export const modifySensor = async (item: TempSensorApiData): Promise<void> => {
-  await axios.post(apiBaseUrl + "/modifySensor", item);
+  await axios.post(apiBaseUrl + "/TempSensor/modify", item);
 };
 
 // -----------------------
 // GPIO API
 // -----------------------
 export const getGPIOList = async (): Promise<GPIOItemProps[]> => {
-  const response = await axios.get<GPIOItemProps[]>(apiBaseUrl + "/getGPIOList");
+  const response = await axios.get<GPIOItemProps[]>(apiBaseUrl + "/GPIO/get");
   return response.data;
 };
 
 export const createGPIO = async (item: GPIOItemProps): Promise<void> => {
-  await axios.post(apiBaseUrl + "/createGPIO", item);
+  await axios.post(apiBaseUrl + "/GPIO/create", item);
 };
 
 export const deleteGPIO = async (id: number): Promise<void> => {
-  await axios.post(apiBaseUrl + "/deleteGPIO", { id });
+  await axios.post(apiBaseUrl + "/GPIO/delete", { id });
 };
 
 export const modifyGPIO = async (item: GPIOItemProps): Promise<void> => {
-  await axios.post(apiBaseUrl + "/modifyGPIO", item);
+  await axios.post(apiBaseUrl + "/GPIO/modify", item);
 };
 
 // -----------------------
@@ -211,18 +212,25 @@ export interface ThermostatApiData {
 }
 
 export const getThermostatList = async (): Promise<ThermostatApiData[]> => {
-  const response = await axios.get<ThermostatApiData[]>(apiBaseUrl + "/getThermostatList");
+  const response = await axios.get<ThermostatApiData[]>(apiBaseUrl + "/Thermostat/get");
   return response.data;
 };
 
 export const createThermostate = async (item: ThermostatApiData): Promise<void> => {
-  await axios.post(apiBaseUrl + "/createThermostat", item);
+  await axios.post(apiBaseUrl + "/Thermostat/create", item);
 };
 
 export const deleteThermostat = async (id: number): Promise<void> => {
-  await axios.post(apiBaseUrl + "/deleteThermostat", { id });
+  await axios.post(apiBaseUrl + "/Thermostat/delete", { id });
 };
 
 export const modifyThermostat = async (item: ThermostatApiData): Promise<void> => {
-  await axios.post(apiBaseUrl + "/modifyThermostat", item);
+  await axios.post(apiBaseUrl + "/Thermostat/modify", item);
+};
+
+// -----------------------
+// System API
+// -----------------------
+export const rebootSystem = async (): Promise<void> => {
+  await axios.post(apiBaseUrl + "/restart", {});
 };
