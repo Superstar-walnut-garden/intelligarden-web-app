@@ -34,6 +34,8 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
       enabled: true,
       status: false,
       mode: "weekly",
+      skipped: false,
+      skipEvent_id: -1
     };
     onCreate(newItem);
   };
