@@ -9,6 +9,7 @@ import EventManagerPage from './pages/EventManagerPage';
 import PinManagerPage from './pages/PinManagerPage';
 import DisplaySettings from './pages/DisplaySettings';
 import ThermostatManagerPage from './pages/ThermostatManagerPage';
+import TimezoneSettings from './pages/TimezoneSettings';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,8 @@ const App: React.FC = () => {
         <Route path="/Pin-manager" element={<PinManagerPage/>}/>
         <Route path="/DisplaySettings" element={<DisplaySettings/>}/>
         <Route path="thermostat-manager" element={<ThermostatManagerPage/>}/>
+        <Route path="timezone-settings" element={<TimezoneSettings/>}/>
+        <Route path="*" element={<Home/>}/> {/* Fallback route */}
       </Routes>
     </Router>
   );
