@@ -1,183 +1,157 @@
-// // src/components/WifiConfigForm.tsx
-// import React, { useState, useEffect } from "react";
-// import axios, { AxiosResponse } from "axios";
-// import { Form, Button, Row, Col } from "react-bootstrap";
-// import TitleBar from "../Components/TitleBar";
+import React, { useEffect, useState } from "react";
+import TitleBar from "../Components/TitleBar";
+import * as ApiService from "../api/apiService";
+import BadgeIndicator from "../Components/BadgeIndicator";
+import DateTimePicker from "../Components/DateTimePicker";
 
-// interface FirebaseSettingsData {
-//   apiKey: string;
-//   databaseURL: string;
-//   userEmail: string;
-//   userPassword: string;
-//   databaseRootName: string;
-//   // interval?: string;
-// }
+const TimezoneSettings: React.FC = () => {
+  const [timeConfig, setTimeConfig] = useState<ApiService.TimeConfigApiData>({
+    timezone: "",
+    ntpServer: "",
+    manualTimeSetFlag: false,
+    manualTimeEpoch: Math.floor(Date.now() / 1000), // Default to current time
+    timeSubsystemInitialized: false,
+    externalRTCAvailable: false,
+    setTimeAutomatically: true,
+    ntpUpdated: false,
+  });
 
-// const TimezoneSettings: React.FC = () => {
-//   const [firebaseSettingsData, setFirebaseSettingsData] =
-//     useState<FirebaseSettingsData>({
-//       apiKey: "",
-//       databaseURL: "",
-//       userEmail: "",
-//       userPassword: "",
-//       databaseRootName: "",
-//     });
+  const fetchTimeConfig = async () => {
+    try {
+      const data = await ApiService.getTimeConfig();
+      setTimeConfig(data);
+    } catch (error) {
+      console.error("Error fetching time configuration:", error);
+    }
+  };
 
-//   useEffect(() => {
-//     axios
-//       .get<FirebaseSettingsData>("/getFirebaseData")
-//       .then((response: AxiosResponse<FirebaseSettingsData>) => {
-//         setFirebaseSettingsData(response.data);
-//         if (
-//           firebaseSettingsData.apiKey === "" &&
-//           firebaseSettingsData.databaseURL === "" &&
-//           firebaseSettingsData.userEmail === "" &&
-//           firebaseSettingsData.userPassword === "" &&
-//           firebaseSettingsData.databaseRootName === ""
-//         ) {
-//           setFirebaseEnabled(false);
-//         }
-//       });
-//   }, []);
-//   const [firebaseEnabled, setFirebaseEnabled] = useState<boolean>(false);
+  useEffect(() => {
+    fetchTimeConfig();
+  }, []);
 
-//   const handleSave = () => {
-//     const payload = {
-//       apiKey: firebaseSettingsData.apiKey,
-//       databaseURL: firebaseSettingsData.databaseURL,
-//       userEmail: firebaseSettingsData.userEmail,
-//       userPassword: firebaseSettingsData.userPassword,
-//       databaseRootName: firebaseSettingsData.databaseRootName,
-//     };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTimeConfig((prev) => ({
+      ...prev,
+      [name]: name === "manualTimeEpoch" ? Number(value) : value,
+    }));
+  };
 
-//     console.log("Payload:", payload); // Debugging line
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setTimeConfig((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
 
-//     axios
-//       .post("/setFirebaseData", payload, {
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       })
-//       .then((response: AxiosResponse) => {
-//         console.log("Firebase config saved:", response.data);
-//       });
-//   };
+  const handleDateTimeChange = (epoch: number) => {
+    setTimeConfig((prev) => ({
+      ...prev,
+      manualTimeEpoch: epoch,
+    }));
+  };
 
-//   return (
-//     <>
-//       {" "}
-//       <TitleBar title="Firebase Settings" />
-//       <Form className="mt-3">
-//         <>
-//           <Form.Group as={Row} controlId="formFirebase">
-//             <Form.Label column sm={2}>
-//               Data Logging is {firebaseEnabled ? "Enabled" : "Disabled"}
-//             </Form.Label>
-//             <Col sm={10}>
-//               <Form.Check
-//                 type="switch"
-//                 checked={firebaseEnabled}
-//                 onChange={handleEnableToggle}
-//               />
-//             </Col>
-//           </Form.Group>
-//           {firebaseEnabled && (
-//             <>
-//               <Form.Group as={Row} controlId="formApiKey">
-//                 <Form.Label column sm={2}>
-//                   apiKey
-//                 </Form.Label>
-//                 <Col sm={10}>
-//                   <Form.Control
-//                     type="text"
-//                     value={firebaseSettingsData.apiKey || ""}
-//                     onChange={(e) =>
-//                       setFirebaseSettingsData({
-//                         ...firebaseSettingsData,
-//                         apiKey: e.target.value,
-//                       })
-//                     }
-//                   />
-//                 </Col>
-//               </Form.Group>
-//               <Form.Group as={Row} controlId="formDatabaseURL">
-//                 <Form.Label column sm={2}>
-//                   databaseURL
-//                 </Form.Label>
-//                 <Col sm={10}>
-//                   <Form.Control
-//                     type="text"
-//                     value={firebaseSettingsData.databaseURL || ""}
-//                     onChange={(e) =>
-//                       setFirebaseSettingsData({
-//                         ...firebaseSettingsData,
-//                         databaseURL: e.target.value,
-//                       })
-//                     }
-//                   />
-//                 </Col>
-//               </Form.Group>
-//               <Form.Group as={Row} controlId="formUserEmail">
-//                 <Form.Label column sm={2}>
-//                   userEmail
-//                 </Form.Label>
-//                 <Col sm={10}>
-//                   <Form.Control
-//                     type="text"
-//                     value={firebaseSettingsData.userEmail || ""}
-//                     onChange={(e) =>
-//                       setFirebaseSettingsData({
-//                         ...firebaseSettingsData,
-//                         userEmail: e.target.value,
-//                       })
-//                     }
-//                   />
-//                 </Col>
-//               </Form.Group>
-//               <Form.Group as={Row} controlId="formUserPassword">
-//                 <Form.Label column sm={2}>
-//                   userPassword
-//                 </Form.Label>
-//                 <Col sm={10}>
-//                   <Form.Control
-//                     type="text"
-//                     value={firebaseSettingsData.userPassword || ""}
-//                     onChange={(e) =>
-//                       setFirebaseSettingsData({
-//                         ...firebaseSettingsData,
-//                         userPassword: e.target.value,
-//                       })
-//                     }
-//                   />
-//                 </Col>
-//               </Form.Group>
-//               <Form.Group as={Row} controlId="formDatabaseRootName">
-//                 <Form.Label column sm={2}>
-//                   databaseRootName
-//                 </Form.Label>
-//                 <Col sm={10}>
-//                   <Form.Control
-//                     type="text"
-//                     value={firebaseSettingsData.databaseRootName || ""}
-//                     onChange={(e) =>
-//                       setFirebaseSettingsData({
-//                         ...firebaseSettingsData,
-//                         databaseRootName: e.target.value,
-//                       })
-//                     }
-//                   />
-//                 </Col>
-//               </Form.Group>
-//             </>
-//           )}
-//         </>
+  const handleSave = async () => {
+    try {
+      await ApiService.setTimeConfig(timeConfig);
+      fetchTimeConfig(); // Refresh the configuration after saving
+      alert("Time configuration saved successfully!");
+    } catch (error) {
+      console.error("Error saving time configuration:", error);
+      alert("Failed to save time configuration.");
+    }
+  };
 
-//         <Button variant="primary" onClick={handleSave} className="mt-3">
-//           Apply / Save
-//         </Button>
-//       </Form>
-//     </>
-//   );
-// };
+  return (
+    <>
+      <TitleBar title="Date & Time Settings" />
+      <div className="container mt-4">
+        <div className="card p-4">
+          <h3 className="card-title">Configure Date & Time</h3>
+          <div className="form-check form-switch mt-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="setTimeAutomatically"
+              name="setTimeAutomatically"
+              checked={timeConfig.setTimeAutomatically}
+              onChange={handleCheckboxChange}
+            />
+            <label className="form-check-label" htmlFor="setTimeAutomatically">
+              Set Time Automatically
+            </label>
+          </div>
+          {timeConfig.setTimeAutomatically && (
+            <div className="form-group">
+              <div className="form-group">
+                <label htmlFor="ntpServer">NTP Server</label>
+                <input
+                  type="text"
+                  id="ntpServer"
+                  name="ntpServer"
+                  className="form-control"
+                  value={timeConfig.ntpServer}
+                  onChange={handleInputChange}
+                  placeholder="e.g., pool.ntp.org"
+                />
+              </div>
+              <BadgeIndicator
+                label="Synced with Server"
+                status={timeConfig.ntpUpdated}
+                successText="OK"
+                failureText="NO"
+              />
+            </div>
+          )}
+          {!timeConfig.setTimeAutomatically && (
+            <div className="form-group">
+              <div className="d-flex-collum align-items-center">
+                <DateTimePicker
+                  onDateTimeChange={handleDateTimeChange}
+                  initialEpoch={Math.floor(
+                    (Date.now() - new Date().getTimezoneOffset() * 60000) / 1000
+                  )}
+                  onSet={() => {
+                    const newState = { ...timeConfig, manualTimeSetFlag: true };
+                    ApiService.setTimeConfig(newState);
+                    fetchTimeConfig(); // Refresh the configuration after setting time
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          <div className="form-group">
+            <label htmlFor="timezone">Timezone</label>
+            <input
+              type="text"
+              id="timezone"
+              name="timezone"
+              className="form-control"
+              value={timeConfig.timezone}
+              onChange={handleInputChange}
+              placeholder="e.g. PST8PDT,M3.2.0/2,M11.1.0/2, UTC0"
+            />
+          </div>
+          <BadgeIndicator
+            label="External RTC"
+            status={timeConfig.externalRTCAvailable}
+            successText="OK"
+            failureText="Not Found!"
+          />
+          <BadgeIndicator
+            label="Time Subsystem"
+            status={timeConfig.timeSubsystemInitialized}
+            successText="OK"
+            failureText="Not Initialized!"
+          />
+          <button className="btn btn-primary mt-3" onClick={handleSave}>
+            Save Configuration
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
-// export default TimezoneSettings;
+export default TimezoneSettings;

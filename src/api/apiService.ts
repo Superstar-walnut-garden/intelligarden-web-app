@@ -234,3 +234,28 @@ export const modifyThermostat = async (item: ThermostatApiData): Promise<void> =
 export const rebootSystem = async (): Promise<void> => {
   await axios.post(apiBaseUrl + "/restart", {});
 };
+
+// -----------------------
+// Hotspot API
+// -----------------------
+export interface TimeConfigApiData {
+  timezone: string;
+  ntpServer: string;
+  timeSubsystemInitialized: boolean;
+  externalRTCAvailable: boolean;
+  setTimeAutomatically: boolean;
+  ntpUpdated: boolean;
+  manualTimeSetFlag: boolean;
+  manualTimeEpoch: number;
+}
+
+export const getTimeConfig = async (): Promise<TimeConfigApiData> => {
+  const response = await axios.get<TimeConfigApiData>(apiBaseUrl + "/time-config");
+  return response.data;
+};
+
+export const setTimeConfig = async (payload: TimeConfigApiData): Promise<void> => {
+  await axios.post(apiBaseUrl + "/time-config", payload, {
+    headers: { "Content-Type": "application/json" }
+  });
+};
