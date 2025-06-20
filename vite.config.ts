@@ -25,5 +25,15 @@ export default defineConfig(({ mode }) => {
             }
           : undefined,
     },
+    build: {
+      rollupOptions: {
+        output: {
+          // Disable Hash To Reduce File Length Due To ESP32 SPIFFS File Name Length Limitaion (path < 32 characters)
+          assetFileNames: "assets/[name].[ext]",
+          chunkFileNames: "chunks/[name].js",
+          entryFileNames: "js/[name].js",
+        },
+      },
+    },
   };
 });
