@@ -38,19 +38,19 @@ const EventListGroup: React.FC<EventListGroupProps> = ({
 
   function nextId() {
     let newId = 1;
-    while (items.some(item => item.id === newId)) {
+    while (items.some((item) => item.id === newId)) {
       newId++;
     }
     return newId;
   }
-  
+
   const handleRemoveItem = (id: number) => {
     onRemove(id);
   };
-  
+
   const handleSave = (item: Event) => {
     onSave(item);
-  }
+  };
 
   return (
     <div
@@ -59,17 +59,19 @@ const EventListGroup: React.FC<EventListGroupProps> = ({
     >
       <div
         className="list-group overflow-auto"
-        style={{ maxHeight: "400px", width: "fit-content" }}
+        style={{ maxHeight: "65vh", width: "40vh" }}
       >
-        {items.map((item) => (
-          <EventItem
-            key={item.id}
-            item={item}
-            onRemove={(id) => handleRemoveItem(id)}
-            onSave={(updatedItem) => handleSave(updatedItem)}
-            eventList={items}
-          />
-        ))}
+        <div className="px-3">
+          {items.map((item) => (
+            <EventItem
+              key={item.id}
+              item={item}
+              onRemove={(id) => handleRemoveItem(id)}
+              onSave={(updatedItem) => handleSave(updatedItem)}
+              eventList={items}
+            />
+          ))}
+        </div>
       </div>
       <div className="d-flex align-items-center w-100">
         <button className="btn btn-primary m-4 w-100" onClick={handleAddItem}>
