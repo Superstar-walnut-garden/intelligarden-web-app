@@ -145,7 +145,7 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
           </button>
         </div>
       </div>
-      <div className="d-flex w-100">
+      <div className="d-flex w-100 mb-1">
         <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
           Remove
         </button>
