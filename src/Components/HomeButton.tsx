@@ -6,10 +6,9 @@ const HomeButton: React.FC = () => {
   return (
     <Link
       to="/"
-      className="d-flex align-items-center align-text-center justify-contents-center btn btn-primary"
+      className="btn btn-primary align-items-center align-text-center justify-contents-center  rounded-circle m-1"
     >
       <House />
-      <p className="mb-0 ms-2">Home</p>
     </Link>
   );
 };
