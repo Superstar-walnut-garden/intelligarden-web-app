@@ -27,7 +27,7 @@ const EventListGroup: React.FC<EventListGroupProps> = ({
           name: "Untitled Event",
           status: false,
           occupied: false,
-          invert: false,
+          logic: "self",
         };
         onCreate(newItem);
       } else {

@@ -10,7 +10,7 @@ export interface Event {
   name: string;
   status: boolean;
   occupied: boolean;
-  invert: boolean;
+  logic: string;
 }
 
 interface EventItemComponentProps {
@@ -46,16 +46,15 @@ const EventItem: React.FC<EventItemComponentProps> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [localItem, setLocalItem] = useState(item);
-  const [enableMating, setEnableMating] = React.useState(
-    localItem.event_id !== -1
-  );
   const handleEditClick = () => {
     if (isEditing) onSave(localItem);
     setIsEditing(!isEditing);
   };
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEnableMating(e.target.checked);
-    // event_id remains unchanged
+  const handleLogicChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLocalItem((prevItem) => ({
+      ...prevItem,
+      logic: String(e.target.value),
+    }));
   };
 
   return (
@@ -74,51 +73,54 @@ const EventItem: React.FC<EventItemComponentProps> = ({
           <div className="d-flex align-items-center w-100 mb-1">
             <label
               title="id"
-              className={`form-control-plaintext text-muted w-auto mx-1`}
+              className={`form-control-plaintext text-muted w-auto`}
             >
               {"ID: " + localItem.id}
             </label>
           </div>
-          <div className="form-check me-2">
-            <input
-              title="mycheckbox"
-              type="checkbox"
-              className="form-check-input"
-              id="enableInversion"
-              checked={localItem.invert}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLocalItem((prevItem) => ({
-                  ...prevItem,
-                  invert: Boolean(e.target.checked),
-                }));
-              }}
-              disabled={!isEditing}
-            />
-            <label className="form-check-label" htmlFor="enableMating">
-              Invert Status (for listeners)
-            </label>
-          </div>
           <div className="d-flex align-items-center w-100 mb-1">
-            <div className="form-check me-2">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="enableMating"
-                checked={enableMating}
-                onChange={handleCheckboxChange}
-                disabled={!isEditing}
-              />
-              <label className="form-check-label" htmlFor="enableMating">
-                Enable Mating
-              </label>
-            </div>
+            <label className={`${isEditing ? "" : "text-muted"}`}>
+              Signal Logic:
+            </label>
+            <select
+              className={`w-auto mx-1 ${
+                isEditing ? "form-control" : "form-control-plaintext text-muted"
+              }`}
+              title="SignalMode"
+              value={localItem.logic}
+              disabled={!isEditing}
+              onChange={handleLogicChange}
+            >
+              <optgroup label="Self-Driven Modes">
+                <option value={"self"}>Main (Self)</option>
+                <option value={"selfInverted"}>Inverted Self</option>
+              </optgroup>
+              <optgroup label="Paired-only Modes">
+                <option value={"pairedOnly"}>Paired Only</option>
+                <option value={"pairedInverted"}>Paired Inverted</option>
+              </optgroup>
+              <optgroup label="Paired-Logic Modes">
+                <option value={"andWith"}>AND With</option>
+                <option value={"orWith"}>OR With</option>
+                <option value={"xorWith"}>XOR With</option>
+                <option value={"nandWith"}>NAND With</option>
+                <option value={"norWith"}>NOR With</option>
+              </optgroup>
+            </select>
           </div>
           <div
             className={`d-flex align-items-center w-100 mb-1 ${
-              !enableMating ? "d-none" : undefined
+              localItem.logic === "self" ||
+              localItem.logic === "selfInverted" ||
+              localItem.logic === undefined
+                ? "d-none"
+                : undefined
             }`}
           >
-            <label className="text-muted w-auto"> Mate with: </label>
+            <label className={`${isEditing ? "" : "text-muted"}`}>
+              {" "}
+              Paired Event:{" "}
+            </label>
             <select
               title="eventID"
               className={`w-auto mx-1 ${
