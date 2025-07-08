@@ -102,7 +102,6 @@ const EventItem: React.FC<EventItemComponentProps> = ({
               <optgroup label="Paired-Logic Modes">
                 <option value={"andWith"}>AND With</option>
                 <option value={"orWith"}>OR With</option>
-                <option value={"xorWith"}>XOR With</option>
                 <option value={"nandWith"}>NAND With</option>
                 <option value={"norWith"}>NOR With</option>
               </optgroup>
