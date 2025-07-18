@@ -6,6 +6,7 @@ import ItemTitle from "../Components/ItemTitle";
 import { SignalApiData } from "../api/apiService";
 import SignalPicker from "./SignalPicker";
 import { SignalHubItem } from "../api/apiService";
+import { SignalType } from "../Components/SignalNameResolver";
 
 interface SignalItemComponentProps {
   item: SignalApiData;
@@ -64,19 +65,13 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
       />
       <div className="d-flex-column align-items-center w-100 p-2">
         <div className="d-flex-column align-items-center w-100 mb-1">
-          <div className="d-flex align-items-center w-100 mb-1">
-            <label
-              title="id"
-              className={`form-control-plaintext text-muted w-auto`}
-            >
-              {"ID: " + localItem.id}
-            </label>
-          </div>
+          <div className="d-flex align-items-center w-100 mb-1"></div>
           <div className="d-flex-collumn align-items-center w-100 mb-1">
             <SignalPicker
               selectedValues={[localItem.broadcaster]}
               multiple={false}
               name="Broadcaster"
+              allowedTypes={[SignalType.Broadcaster]}
               visible={isEditing}
               onChange={(selected) => {
                 setLocalItem((prevItem) => ({
@@ -91,6 +86,7 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
               selectedValues={localItem.listeners}
               multiple={true}
               name="Listeners"
+              allowedTypes={[SignalType.Listener]}
               visible={isEditing}
               onChange={(selected) => {
                 setLocalItem((prevItem) => ({

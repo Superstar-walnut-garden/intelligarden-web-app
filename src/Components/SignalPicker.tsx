@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getSignalHubList, SignalHubItem } from "../api/apiService";
-import { SignalNameResolver } from "../Components/SignalNameResolver";
+import {
+  SignalNameResolver,
+  SignalType,
+} from "../Components/SignalNameResolver";
 
 interface SignalDrilldownProps {
   selectedValues?: string[];
@@ -8,6 +11,7 @@ interface SignalDrilldownProps {
   onChange?: (selected: string[]) => void;
   visible?: boolean;
   name?: string;
+  allowedTypes?: SignalType[]; // ✅ Strict enum-based
 }
 
 type DrillLevel =
@@ -20,6 +24,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
   onChange,
   visible = true,
   name = "signals",
+  allowedTypes = [SignalType.Broadcaster, SignalType.Listener], // ✅ Default to both
 }) => {
   const [hub, setHub] = useState<SignalHubItem[]>([]);
   const [selected, setSelected] = useState<string[]>(selectedValues);
@@ -58,6 +63,9 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
     }
     return undefined;
   };
+
+  const getSignalTypeLabel = (value: SignalType): string =>
+    Object.entries(SignalType).find(([, v]) => v === value)?.[0] ?? value;
 
   const renderLevel = () => {
     if (path.length === 0) {
@@ -114,15 +122,37 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
       return (
         <ul className="list-group">
           {item.signals.map((signal) => {
+            const parsed = SignalNameResolver.parse(signal);
+            const type = parsed.type;
+            const isAllowed = allowedTypes.includes(type);
             const isSelected = selected.includes(signal);
+
+            const handleClick = () => {
+              if (isAllowed) {
+                handleSelect(signal);
+              } else {
+                alert(
+                  `Only ${allowedTypes
+                    .map(getSignalTypeLabel)
+                    .join(" / ")} signals can be selected.`
+                );
+              }
+            };
+
             return (
               <li
                 key={signal}
-                className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                onClick={() => handleSelect(signal)}
+                className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
+                  isAllowed ? "" : "text-muted"
+                }`}
+                onClick={handleClick}
                 style={{ cursor: "pointer" }}
               >
-                <span>{isSelected ? `✅ ${signal}` : signal}</span>
+                <span>
+                  {isSelected
+                    ? `✅ ${SignalNameResolver.parse(signal).localSignalName}`
+                    : SignalNameResolver.parse(signal).localSignalName}
+                </span>
               </li>
             );
           })}
@@ -148,6 +178,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
           </button>
         )}
       </div>
+
       <ul className="list-group p-0">
         {selected.map((signal) => {
           const parsed = SignalNameResolver.parse(signal);
