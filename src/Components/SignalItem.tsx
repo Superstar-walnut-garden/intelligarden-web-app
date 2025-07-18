@@ -3,28 +3,22 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import ItemTitle from "../Components/ItemTitle";
+import { SignalApiData } from "../api/apiService";
+import SignalPicker from "./SignalPicker";
+import { SignalHubItem } from "../api/apiService";
 
-export interface Event {
-  id: number;
-  event_id: number;
-  name: string;
-  status: boolean;
-  occupied: boolean;
-  logic: string;
-}
-
-interface EventItemComponentProps {
-  item: Event;
-  eventList: Event[];
+interface SignalItemComponentProps {
+  item: SignalApiData;
   onRemove: (id: number) => void;
-  onSave: (item: Event) => void;
+  onSave: (item: SignalApiData) => void;
+  signalHubList: SignalHubItem[];
 }
 
-const EventItem: React.FC<EventItemComponentProps> = ({
+const SignalItem: React.FC<SignalItemComponentProps> = ({
   item,
-  eventList,
   onRemove,
   onSave,
+  signalHubList,
 }) => {
   const handleRemove = () => {
     onRemove(localItem.id);
@@ -78,36 +72,35 @@ const EventItem: React.FC<EventItemComponentProps> = ({
               {"ID: " + localItem.id}
             </label>
           </div>
-          <div className="d-flex align-items-center w-100 mb-1">
-            <label className={`${isEditing ? "" : "text-muted"}`}>
-              Signal Logic:
-            </label>
-            <select
-              className={`w-auto mx-1 ${
-                isEditing ? "form-control" : "form-control-plaintext text-muted"
-              }`}
-              title="SignalMode"
-              value={localItem.logic}
-              disabled={!isEditing}
-              onChange={handleLogicChange}
-            >
-              <optgroup label="Self-Driven Modes">
-                <option value={"self"}>Main (Self)</option>
-                <option value={"selfInverted"}>Inverted Self</option>
-              </optgroup>
-              <optgroup label="Paired-only Modes">
-                <option value={"pairedOnly"}>Paired Only</option>
-                <option value={"pairedInverted"}>Paired Inverted</option>
-              </optgroup>
-              <optgroup label="Paired-Logic Modes">
-                <option value={"andWith"}>AND With</option>
-                <option value={"orWith"}>OR With</option>
-                <option value={"nandWith"}>NAND With</option>
-                <option value={"norWith"}>NOR With</option>
-              </optgroup>
-            </select>
+          <div className="d-flex-collumn align-items-center w-100 mb-1">
+            <SignalPicker
+              selectedValues={[localItem.broadcaster]}
+              multiple={false}
+              name="Broadcaster"
+              visible={isEditing}
+              onChange={(selected) => {
+                setLocalItem((prevItem) => ({
+                  ...prevItem,
+                  broadcaster: selected[0] || "",
+                }));
+              }}
+            />
           </div>
-          <div
+          <div className="d-flex-collumn align-items-center w-100 mb-1">
+            <SignalPicker
+              selectedValues={localItem.listeners}
+              multiple={true}
+              name="Listeners"
+              visible={isEditing}
+              onChange={(selected) => {
+                setLocalItem((prevItem) => ({
+                  ...prevItem,
+                  listeners: selected || "",
+                }));
+              }}
+            />
+          </div>
+          {/* <div
             className={`d-flex align-items-center w-100 mb-1 ${
               localItem.logic === "self" ||
               localItem.logic === "selfInverted" ||
@@ -138,7 +131,7 @@ const EventItem: React.FC<EventItemComponentProps> = ({
                   </option>
                 ))}
             </select>
-          </div>
+          </div> */}
         </div>
 
         <div className="d-flex align-items-center w-100 mb-3">
@@ -175,4 +168,4 @@ const EventItem: React.FC<EventItemComponentProps> = ({
   );
 };
 
-export default EventItem;
+export default SignalItem;

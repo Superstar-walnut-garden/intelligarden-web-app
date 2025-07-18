@@ -1,39 +1,32 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Event } from "../Components/EventItem";
-import EventItem from "../Components/EventItem";
+import { SignalApiData, SignalHubItem } from "../api/apiService";
+import SignalItem from "../Components/SignalItem";
 
-interface EventListGroupProps {
-  items: Event[];
-  onCreate: (item: Event) => void;
-  onSave: (item: Event) => void;
+interface SignalListGroupProps {
+  items: SignalApiData[];
+  signalHubList: SignalHubItem[];
+  onCreate: (item: SignalApiData) => void;
+  onSave: (item: SignalApiData) => void;
   onRemove: (id: number) => void;
 }
 
-const EventListGroup: React.FC<EventListGroupProps> = ({
+const SignalListGroup: React.FC<SignalListGroupProps> = ({
   items,
   onSave,
   onCreate,
   onRemove,
+  signalHubList,
 }) => {
   const handleAddItem = () => {
-    const input = window.prompt("New Event Name:");
-    if (input !== null) {
-      const name = String(input);
-      if (name) {
-        const newItem: Event = {
-          id: nextId(),
-          event_id: -1,
-          name: "Untitled Event",
-          status: false,
-          occupied: false,
-          logic: "self",
-        };
-        onCreate(newItem);
-      } else {
-        alert("Please enter a valid name!");
-      }
-    }
+    const newItem: SignalApiData = {
+      id: nextId(),
+      name: "Untitled Signal",
+      status: false,
+      broadcaster: "",
+      listeners: [],
+    };
+    onCreate(newItem);
   };
 
   function nextId() {
@@ -48,7 +41,7 @@ const EventListGroup: React.FC<EventListGroupProps> = ({
     onRemove(id);
   };
 
-  const handleSave = (item: Event) => {
+  const handleSave = (item: SignalApiData) => {
     onSave(item);
   };
 
@@ -63,23 +56,23 @@ const EventListGroup: React.FC<EventListGroupProps> = ({
       >
         <div className="px-3">
           {items.map((item) => (
-            <EventItem
+            <SignalItem
               key={item.id}
               item={item}
               onRemove={(id) => handleRemoveItem(id)}
               onSave={(updatedItem) => handleSave(updatedItem)}
-              eventList={items}
+              signalHubList={signalHubList}
             />
           ))}
         </div>
       </div>
       <div className="d-flex align-items-center w-100">
         <button className="btn btn-primary m-4 w-100" onClick={handleAddItem}>
-          New Event
+          New Signal
         </button>
       </div>
     </div>
   );
 };
 
-export default EventListGroup;
+export default SignalListGroup;
