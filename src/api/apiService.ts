@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Event } from "../Components/EventItem";
 import { SchedulerItemProps } from "../Components/SchedulerItem";
 import { GPIOItemProps } from "../Components/GPIOItem";
 
@@ -9,25 +8,31 @@ const apiBaseUrl = "/api";
 // Display API
 // -----------------------
 
-
 // -----------------------
-// Events API
+// Signal API
 // -----------------------
-export const getEventList = async (): Promise<Event[]> => {
-  const response = await axios.get<Event[]>(apiBaseUrl + '/Event/get');
+export interface SignalApiData {
+  id: number;
+  name: string;
+  status: boolean;
+  broadcaster: string;
+  listeners: string[];
+}
+export const getSignalList = async (): Promise<SignalApiData[]> => {
+  const response = await axios.get<SignalApiData[]>(apiBaseUrl + "/signal/get");
   return response.data;
 };
 
-export const createEvent = async (newEvent: Event): Promise<void> => {
-  await axios.post(apiBaseUrl + '/Event/create', newEvent);
+export const createSignal = async (newSignal: SignalApiData): Promise<void> => {
+  await axios.post(apiBaseUrl + "/signal/create", newSignal);
 };
 
-export const deleteEvent = async (id: number): Promise<void> => {
-  await axios.post(apiBaseUrl + '/Event/delete', { id });
+export const deleteSignal = async (id: number): Promise<void> => {
+  await axios.post(apiBaseUrl + "/signal/delete", { id });
 };
 
-export const modifyEvent = async (event: Event): Promise<void> => {
-  await axios.post(apiBaseUrl + '/Event/modify', { ...event });
+export const modifySignal = async (signal: SignalApiData): Promise<void> => {
+  await axios.post(apiBaseUrl + "/signal/modify", { ...signal });
 };
 
 // -----------------------
@@ -43,13 +48,17 @@ export interface FirebaseSettingsData {
 }
 
 export const getFirebaseData = async (): Promise<FirebaseSettingsData> => {
-  const response = await axios.get<FirebaseSettingsData>(apiBaseUrl + "/getFirebaseData");
+  const response = await axios.get<FirebaseSettingsData>(
+    apiBaseUrl + "/getFirebaseData"
+  );
   return response.data;
 };
 
-export const setFirebaseData = async (payload: FirebaseSettingsData): Promise<void> => {
+export const setFirebaseData = async (
+  payload: FirebaseSettingsData
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/setFirebaseData", payload, {
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
 };
 
@@ -75,7 +84,7 @@ export const getWifiState = async (): Promise<WifiState> => {
 
 export const setWifiConfig = async (payload: WifiState): Promise<void> => {
   await axios.post(apiBaseUrl + "/setWifiConfig", payload, {
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
 };
 
@@ -88,13 +97,17 @@ export interface HotspotConfig {
 }
 
 export const getHotspotConfig = async (): Promise<HotspotConfig> => {
-  const response = await axios.get<HotspotConfig>(apiBaseUrl + "/getHotspotConfig");
+  const response = await axios.get<HotspotConfig>(
+    apiBaseUrl + "/getHotspotConfig"
+  );
   return response.data;
 };
 
-export const setHotspotConfig = async (payload: HotspotConfig): Promise<void> => {
+export const setHotspotConfig = async (
+  payload: HotspotConfig
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/setHotspotConfig", payload, {
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
 };
 
@@ -102,11 +115,15 @@ export const setHotspotConfig = async (payload: HotspotConfig): Promise<void> =>
 // Schedule API
 // -----------------------
 export const getScheduleList = async (): Promise<SchedulerItemProps[]> => {
-  const response = await axios.get<SchedulerItemProps[]>(apiBaseUrl + "/Scheduler/get");
+  const response = await axios.get<SchedulerItemProps[]>(
+    apiBaseUrl + "/Scheduler/get"
+  );
   return response.data;
 };
 
-export const createSchedule = async (item: SchedulerItemProps): Promise<void> => {
+export const createSchedule = async (
+  item: SchedulerItemProps
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/Scheduler/create", item);
 };
 
@@ -130,7 +147,9 @@ export interface CurrentTimeData {
 }
 
 export const getCurrentTime = async (): Promise<CurrentTimeData> => {
-  const response = await axios.get<CurrentTimeData>(apiBaseUrl + "/getCurrentTime");
+  const response = await axios.get<CurrentTimeData>(
+    apiBaseUrl + "/getCurrentTime"
+  );
   return response.data;
 };
 
@@ -185,11 +204,15 @@ export interface DisplayConfig {
 }
 
 export const getDisplayConfig = async (): Promise<DisplayConfig> => {
-  const response = await axios.get<DisplayConfig>(apiBaseUrl + "/getDisplayConfig");
+  const response = await axios.get<DisplayConfig>(
+    apiBaseUrl + "/getDisplayConfig"
+  );
   return response.data;
 };
 
-export const setDisplayConfig = async (config: DisplayConfig): Promise<void> => {
+export const setDisplayConfig = async (
+  config: DisplayConfig
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/setDisplayConfig", config);
 };
 
@@ -212,11 +235,15 @@ export interface ThermostatApiData {
 }
 
 export const getThermostatList = async (): Promise<ThermostatApiData[]> => {
-  const response = await axios.get<ThermostatApiData[]>(apiBaseUrl + "/Thermostat/get");
+  const response = await axios.get<ThermostatApiData[]>(
+    apiBaseUrl + "/Thermostat/get"
+  );
   return response.data;
 };
 
-export const createThermostate = async (item: ThermostatApiData): Promise<void> => {
+export const createThermostate = async (
+  item: ThermostatApiData
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/Thermostat/create", item);
 };
 
@@ -224,7 +251,9 @@ export const deleteThermostat = async (id: number): Promise<void> => {
   await axios.post(apiBaseUrl + "/Thermostat/delete", { id });
 };
 
-export const modifyThermostat = async (item: ThermostatApiData): Promise<void> => {
+export const modifyThermostat = async (
+  item: ThermostatApiData
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/Thermostat/modify", item);
 };
 
@@ -250,12 +279,34 @@ export interface TimeConfigApiData {
 }
 
 export const getTimeConfig = async (): Promise<TimeConfigApiData> => {
-  const response = await axios.get<TimeConfigApiData>(apiBaseUrl + "/time-config");
+  const response = await axios.get<TimeConfigApiData>(
+    apiBaseUrl + "/time-config"
+  );
   return response.data;
 };
 
-export const setTimeConfig = async (payload: TimeConfigApiData): Promise<void> => {
+export const setTimeConfig = async (
+  payload: TimeConfigApiData
+): Promise<void> => {
   await axios.post(apiBaseUrl + "/time-config", payload, {
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
+};
+
+// -----------------------
+// Signal-Hub API
+// -----------------------
+export interface SignalHubItem {
+  name: string;
+  items: {
+    name: string;
+    signals: string[];
+  }[];
+}
+
+export const getSignalHubList = async (): Promise<SignalHubItem[]> => {
+  const response = await axios.get<SignalHubItem[]>(
+    apiBaseUrl + "/signal-hub-items"
+  );
+  return response.data;
 };
