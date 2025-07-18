@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { getSignalHubList, SignalHubItem } from "../api/apiService";
+import { SignalApiData, SignalHubItem } from "../api/apiService";
 import {
   SignalNameResolver,
   SignalType,
 } from "../Components/SignalNameResolver";
 
-interface SignalDrilldownProps {
+interface SignalPickerProps {
+  signalHub: SignalHubItem[];
+  id: number; // Required for SignalApiData
+  signalApiData?: SignalApiData[]; // optional but recommended
   selectedValues?: string[];
   multiple?: boolean;
   onChange?: (selected: string[]) => void;
@@ -18,7 +21,10 @@ type DrillLevel =
   | { type: "subsystem"; name: string }
   | { type: "item"; subsystem: string; name: string };
 
-const SignalPicker: React.FC<SignalDrilldownProps> = ({
+const SignalPicker: React.FC<SignalPickerProps> = ({
+  signalHub,
+  id,
+  signalApiData,
   selectedValues = [],
   multiple = false,
   onChange,
@@ -26,14 +32,9 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
   name = "signals",
   allowedTypes = [SignalType.Broadcaster, SignalType.Listener], // ✅ Default to both
 }) => {
-  const [hub, setHub] = useState<SignalHubItem[]>([]);
   const [selected, setSelected] = useState<string[]>(selectedValues);
   const [path, setPath] = useState<DrillLevel[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    getSignalHubList().then(setHub);
-  }, []);
 
   useEffect(() => {
     onChange?.(selected);
@@ -54,7 +55,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
   };
 
   const getItemNameForSignal = (signal: string): string | undefined => {
-    for (const subsystem of hub) {
+    for (const subsystem of signalHub) {
       for (const item of subsystem.items) {
         if (item.signals.includes(signal)) {
           return item.name;
@@ -64,6 +65,17 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
     return undefined;
   };
 
+  const isSignalLocked = (signal: string): boolean => {
+    if (!signalApiData) return false;
+
+    for (const entry of signalApiData) {
+      if (entry.listeners.includes(signal) && entry.id !== id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const getSignalTypeLabel = (value: SignalType): string =>
     Object.entries(SignalType).find(([, v]) => v === value)?.[0] ?? value;
 
@@ -71,7 +83,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
     if (path.length === 0) {
       return (
         <ul className="list-group">
-          {hub.map((sub) => (
+          {signalHub.map((sub) => (
             <li
               key={sub.name}
               className="list-group-item list-group-item-action"
@@ -86,7 +98,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
     }
 
     if (path.length === 1 && path[0].type === "subsystem") {
-      const subsystem = hub.find((s) => s.name === path[0].name);
+      const subsystem = signalHub.find((s) => s.name === path[0].name);
       if (!subsystem) return null;
 
       return (
@@ -115,7 +127,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
       path[0].type === "subsystem" &&
       path[1].type === "item"
     ) {
-      const subsystem = hub.find((s) => s.name === path[0].name);
+      const subsystem = signalHub.find((s) => s.name === path[0].name);
       const item = subsystem?.items.find((i) => i.name === path[1].name);
       if (!item) return null;
 
@@ -126,16 +138,22 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
             const type = parsed.type;
             const isAllowed = allowedTypes.includes(type);
             const isSelected = selected.includes(signal);
+            const isLocked =
+              type === SignalType.Listener && isSignalLocked(signal);
 
             const handleClick = () => {
-              if (isAllowed) {
-                handleSelect(signal);
-              } else {
+              if (!isAllowed) {
                 alert(
                   `Only ${allowedTypes
                     .map(getSignalTypeLabel)
                     .join(" / ")} signals can be selected.`
                 );
+              } else if (isLocked) {
+                alert(
+                  `This Listener is already connected to another broadcaster and cannot be selected.`
+                );
+              } else {
+                handleSelect(signal);
               }
             };
 
@@ -143,7 +161,7 @@ const SignalPicker: React.FC<SignalDrilldownProps> = ({
               <li
                 key={signal}
                 className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
-                  isAllowed ? "" : "text-muted"
+                  isAllowed && !isLocked ? "" : "text-muted"
                 }`}
                 onClick={handleClick}
                 style={{ cursor: "pointer" }}

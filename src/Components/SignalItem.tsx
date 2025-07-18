@@ -13,6 +13,7 @@ interface SignalItemComponentProps {
   onRemove: (id: number) => void;
   onSave: (item: SignalApiData) => void;
   signalHubList: SignalHubItem[];
+  signalApiData?: SignalApiData[];
 }
 
 const SignalItem: React.FC<SignalItemComponentProps> = ({
@@ -20,6 +21,7 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
   onRemove,
   onSave,
   signalHubList,
+  signalApiData = [],
 }) => {
   const handleRemove = () => {
     onRemove(localItem.id);
@@ -68,6 +70,9 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
           <div className="d-flex align-items-center w-100 mb-1"></div>
           <div className="d-flex-collumn align-items-center w-100 mb-1">
             <SignalPicker
+              signalHub={signalHubList}
+              id={localItem.id}
+              signalApiData={signalApiData}
               selectedValues={[localItem.broadcaster]}
               multiple={false}
               name="Broadcaster"
@@ -83,6 +88,9 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
           </div>
           <div className="d-flex-collumn align-items-center w-100 mb-1">
             <SignalPicker
+              signalHub={signalHubList}
+              id={localItem.id}
+              signalApiData={signalApiData}
               selectedValues={localItem.listeners}
               multiple={true}
               name="Listeners"

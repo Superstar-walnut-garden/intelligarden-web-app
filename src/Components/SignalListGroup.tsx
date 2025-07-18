@@ -6,6 +6,7 @@ import SignalItem from "../Components/SignalItem";
 interface SignalListGroupProps {
   items: SignalApiData[];
   signalHubList: SignalHubItem[];
+  signalApiData?: SignalApiData[]; // optional but recommended
   onCreate: (item: SignalApiData) => void;
   onSave: (item: SignalApiData) => void;
   onRemove: (id: number) => void;
@@ -17,6 +18,7 @@ const SignalListGroup: React.FC<SignalListGroupProps> = ({
   onCreate,
   onRemove,
   signalHubList,
+  signalApiData = [],
 }) => {
   const handleAddItem = () => {
     const newItem: SignalApiData = {
@@ -62,6 +64,7 @@ const SignalListGroup: React.FC<SignalListGroupProps> = ({
               onRemove={(id) => handleRemoveItem(id)}
               onSave={(updatedItem) => handleSave(updatedItem)}
               signalHubList={signalHubList}
+              signalApiData={signalApiData}
             />
           ))}
         </div>

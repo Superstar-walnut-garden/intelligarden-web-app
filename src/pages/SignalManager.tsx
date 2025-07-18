@@ -74,6 +74,7 @@ const SignalManager: React.FC = () => {
           onRemove={deleteSignal}
           onSave={modifySignal}
           signalHubList={signalhubList}
+          signalApiData={signals}
         />
       </div>
     </>
