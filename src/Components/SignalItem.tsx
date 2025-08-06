@@ -5,7 +5,7 @@ import { FloppyFill } from "react-bootstrap-icons";
 import ItemTitle from "../Components/ItemTitle";
 import { SignalApiData } from "../api/apiService";
 import SignalPicker from "./SignalPicker";
-import { SignalHubItem } from "../api/apiService";
+import { SignalHubItem, SignalMode } from "../api/apiService";
 import { SignalType } from "../Components/SignalNameResolver";
 
 interface SignalItemComponentProps {
@@ -86,6 +86,30 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
               }}
             />
           </div>
+          <div
+            className={
+              localItem.mode != SignalMode.SingleSource
+                ? "d-flex-collumn align-items-center w-100 mb-1"
+                : "d-none"
+            }
+          >
+            <SignalPicker
+              signalHub={signalHubList}
+              id={localItem.id}
+              signalApiData={signalApiData}
+              selectedValues={[localItem.auxiliaryBroadcaster]}
+              multiple={false}
+              name="Broadcaster(Auxiliary)"
+              allowedTypes={[SignalType.Broadcaster]}
+              visible={isEditing}
+              onChange={(selected) => {
+                setLocalItem((prevItem) => ({
+                  ...prevItem,
+                  auxiliaryBroadcaster: selected[0] || "",
+                }));
+              }}
+            />
+          </div>
           <div className="d-flex-collumn align-items-center w-100 mb-1">
             <SignalPicker
               signalHub={signalHubList}
@@ -104,38 +128,32 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
               }}
             />
           </div>
-          {/* <div
-            className={`d-flex align-items-center w-100 mb-1 ${
-              localItem.logic === "self" ||
-              localItem.logic === "selfInverted" ||
-              localItem.logic === undefined
-                ? "d-none"
-                : undefined
-            }`}
-          >
+          <div className={`d-flex align-items-center w-100 mb-1`}>
             <label className={`${isEditing ? "" : "text-muted"}`}>
               {" "}
-              Paired Event:{" "}
+              Mode:{" "}
             </label>
             <select
               title="eventID"
               className={`w-auto mx-1 ${
                 isEditing ? "form-control" : "form-control-plaintext text-muted"
               }`}
-              value={localItem.event_id}
-              onChange={handleEventChange}
+              value={localItem.mode}
+              onChange={(e) => {
+                setLocalItem((prevItem) => ({
+                  ...prevItem,
+                  mode: e.target.value as SignalMode,
+                }));
+              }}
               disabled={!isEditing}
             >
-              <option value={-1}>No events assigned!</option>
-              {eventList
-                .filter((event) => event.id !== localItem.id)
-                .map((event) => (
-                  <option key={event.id} value={event.id}>
-                    {event.name}
-                  </option>
-                ))}
+              {Object.values(SignalMode).map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </select>
-          </div> */}
+          </div>
         </div>
 
         <div className="d-flex align-items-center w-100 mb-3">

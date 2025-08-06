@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { SignalApiData, SignalHubItem } from "../api/apiService";
+import {
+  SignalApiData,
+  SignalEndpoint,
+  SignalHubItem,
+} from "../api/apiService";
 import {
   SignalNameResolver,
   SignalType,
@@ -7,14 +11,14 @@ import {
 
 interface SignalPickerProps {
   signalHub: SignalHubItem[];
-  id: number; // Required for SignalApiData
-  signalApiData?: SignalApiData[]; // optional but recommended
-  selectedValues?: string[];
+  id: number;
+  signalApiData?: SignalApiData[];
+  selectedValues?: SignalEndpoint[];
   multiple?: boolean;
-  onChange?: (selected: string[]) => void;
+  onChange?: (selected: SignalEndpoint[]) => void;
   visible?: boolean;
   name?: string;
-  allowedTypes?: SignalType[]; // ✅ Strict enum-based
+  allowedTypes?: SignalType[];
 }
 
 type DrillLevel =
@@ -30,25 +34,15 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
   onChange,
   visible = true,
   name = "signals",
-  allowedTypes = [SignalType.Broadcaster, SignalType.Listener], // ✅ Default to both
+  allowedTypes = [SignalType.Broadcaster, SignalType.Listener],
 }) => {
-  const [selected, setSelected] = useState<string[]>(selectedValues);
+  const [selected, setSelected] = useState<SignalEndpoint[]>(selectedValues);
   const [path, setPath] = useState<DrillLevel[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     onChange?.(selected);
   }, [selected]);
-
-  const handleSelect = (signal: string) => {
-    setSelected((prev) =>
-      multiple
-        ? prev.includes(signal)
-          ? prev.filter((s) => s !== signal)
-          : [...prev, signal]
-        : [signal]
-    );
-  };
 
   const handleBack = () => {
     setPath((prev) => prev.slice(0, -1));
@@ -67,13 +61,33 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
 
   const isSignalLocked = (signal: string): boolean => {
     if (!signalApiData) return false;
-
     for (const entry of signalApiData) {
-      if (entry.listeners.includes(signal) && entry.id !== id) {
+      if (
+        entry.listeners.some((l) => l.signalPath === signal) &&
+        entry.id !== id
+      ) {
         return true;
       }
     }
     return false;
+  };
+
+  const toggleSelection = (signal: string) => {
+    const existing = selected.find((s) => s.signalPath === signal);
+    const updatedSelection = multiple
+      ? existing
+        ? selected.filter((s) => s.signalPath !== signal)
+        : [...selected, { signalPath: signal, inverted: false }]
+      : [{ signalPath: signal, inverted: false }];
+
+    setSelected(updatedSelection);
+  };
+
+  const toggleInversion = (signal: string, value: boolean) => {
+    const updated = selected.map((s) =>
+      s.signalPath === signal ? { ...s, inverted: value } : s
+    );
+    setSelected(updated);
   };
 
   const getSignalTypeLabel = (value: SignalType): string =>
@@ -137,7 +151,7 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
             const parsed = SignalNameResolver.parse(signal);
             const type = parsed.type;
             const isAllowed = allowedTypes.includes(type);
-            const isSelected = selected.includes(signal);
+            const isSelected = selected.some((s) => s.signalPath === signal);
             const isLocked =
               type === SignalType.Listener && isSignalLocked(signal);
 
@@ -153,9 +167,26 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
                   `This Listener is already connected to another broadcaster and cannot be selected.`
                 );
               } else {
-                handleSelect(signal);
+                toggleSelection(signal);
               }
             };
+
+            const inversionCheckbox = isSelected && (
+              <div className="d-flex align-items-center rounded border mx-2">
+                <label className="form-check-label m-2">Invert ↶</label>
+                <input
+                  type="checkbox"
+                  checked={
+                    selected.find((s) => s.signalPath === signal)?.inverted ??
+                    false
+                  }
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => toggleInversion(signal, e.target.checked)}
+                  className="form-check-input me-2"
+                  title="Invert signal"
+                />
+              </div>
+            );
 
             return (
               <li
@@ -166,11 +197,14 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
                 onClick={handleClick}
                 style={{ cursor: "pointer" }}
               >
-                <span>
-                  {isSelected
-                    ? `✅ ${SignalNameResolver.parse(signal).localSignalName}`
-                    : SignalNameResolver.parse(signal).localSignalName}
-                </span>
+                <div className="d-flex align-items-center">
+                  <span>
+                    {isSelected
+                      ? `✅ ${parsed.localSignalName}`
+                      : parsed.localSignalName}
+                  </span>
+                  {inversionCheckbox}
+                </div>
               </li>
             );
           })}
@@ -199,16 +233,33 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
 
       <ul className="list-group p-0">
         {selected.map((signal) => {
-          const parsed = SignalNameResolver.parse(signal);
-          const itemName = getItemNameForSignal(signal);
+          const parsed = SignalNameResolver.parse(signal.signalPath);
+          const itemName = getItemNameForSignal(signal.signalPath);
           return (
-            <li key={signal} className="list-group-item border-0 mx-0 px-0">
-              <div className="d-flex flex-column">
-                <span className="lh-sm">{itemName}</span>
-                <small className="text-muted lh-1">
-                  ({parsed.subsystemName}
-                  {parsed.id}_{parsed.localSignalName})
-                </small>
+            <li
+              key={signal.signalPath}
+              className="list-group-item border-0 mx-0 px-0"
+            >
+              <div className="d-flex">
+                <span
+                  className={`px-1 justify-content-center text-center ${
+                    signal.status ? "text-success" : "text-warning"
+                  }`}
+                >
+                  {signal.status ? "⦿" : "⦾"}
+                </span>
+                <div className="d-flex flex-column">
+                  <div className="d-flex">
+                    <span className="lh-sm">
+                      {itemName} {signal.inverted ? " ↶" : ""}{" "}
+                    </span>
+                  </div>
+
+                  <small className="text-muted lh-1">
+                    ({parsed.subsystemName}
+                    {parsed.id}_{parsed.localSignalName})
+                  </small>
+                </div>
               </div>
             </li>
           );

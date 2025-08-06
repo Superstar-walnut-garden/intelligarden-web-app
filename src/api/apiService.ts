@@ -11,12 +11,24 @@ const apiBaseUrl = "/api";
 // -----------------------
 // Signal API
 // -----------------------
+export interface SignalEndpoint {
+  signalPath: string;
+  inverted: boolean;
+  status: boolean;
+}
+export enum SignalMode {
+  SingleSource = "SingleSource",
+  AndWithAuxiliary = "AndWithAuxiliary",
+  OrWithAuxiliary = "OrWithAuxiliary",
+}
 export interface SignalApiData {
   id: number;
   name: string;
   status: boolean;
-  broadcaster: string;
-  listeners: string[];
+  mode: SignalMode;
+  broadcaster: SignalEndpoint;
+  auxiliaryBroadcaster: SignalEndpoint;
+  listeners: SignalEndpoint[];
 }
 export const getSignalList = async (): Promise<SignalApiData[]> => {
   const response = await axios.get<SignalApiData[]>(apiBaseUrl + "/signal/get");
