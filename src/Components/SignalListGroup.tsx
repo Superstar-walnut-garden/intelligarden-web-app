@@ -71,7 +71,7 @@ const SignalListGroup: React.FC<SignalListGroupProps> = ({
       </div>
       <div className="d-flex align-items-center w-100">
         <button className="btn btn-primary m-4 w-100" onClick={handleAddItem}>
-          New Signal
+          New Signal Router
         </button>
       </div>
     </div>

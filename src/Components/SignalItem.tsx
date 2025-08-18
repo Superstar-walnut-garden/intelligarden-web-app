@@ -43,6 +43,7 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [localItem, setLocalItem] = useState(item);
+  
   const handleEditClick = () => {
     if (isEditing) onSave(localItem);
     setIsEditing(!isEditing);

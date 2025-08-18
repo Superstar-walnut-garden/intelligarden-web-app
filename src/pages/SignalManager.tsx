@@ -11,8 +11,11 @@ const SignalManager: React.FC = () => {
   >([]);
 
   useEffect(() => {
-    getList();
-    getSignalHub();
+    const interval = setInterval(() => {
+      getList();
+      getSignalHub();
+    }, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   const getList = async () => {
@@ -56,7 +59,7 @@ const SignalManager: React.FC = () => {
 
   const modifySignal = async (signal: SignalApiData) => {
     try {
-      await ApiService.modifySignal(signal);
+      await ApiService.modifySignal(signal.id, signal);
       getList();
     } catch (error) {
       console.error("Error deleting event:", error);
