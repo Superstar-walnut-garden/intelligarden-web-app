@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
   SignalApiData,
   SignalEndpoint,
@@ -77,8 +78,8 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
     const updatedSelection = multiple
       ? existing
         ? selected.filter((s) => s.signalPath !== signal)
-        : [...selected, { signalPath: signal, inverted: false }]
-      : [{ signalPath: signal, inverted: false }];
+        : [...selected, { signalPath: signal, inverted: false, status: false }]
+      : [{ signalPath: signal, inverted: false, status: false }];
 
     setSelected(updatedSelection);
   };
@@ -236,32 +237,71 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
           const parsed = SignalNameResolver.parse(signal.signalPath);
           const itemName = getItemNameForSignal(signal.signalPath);
           return (
-            <li
-              key={signal.signalPath}
-              className="list-group-item border-0 mx-0 px-0"
-            >
-              <div className="d-flex">
-                <span
-                  className={`px-1 justify-content-center text-center ${
-                    signal.status ? "text-success" : "text-warning"
-                  }`}
-                >
-                  {signal.status ? "⦿" : "⦾"}
-                </span>
-                <div className="d-flex flex-column">
-                  <div className="d-flex">
-                    <span className="lh-sm">
-                      {itemName} {signal.inverted ? " ↶" : ""}{" "}
-                    </span>
-                  </div>
+            parsed.localSignalName.length > 0 &&
+            parsed.subsystemName.length > 0 && (
+              <li
+                key={signal.signalPath}
+                className="list-group-item border-0 mx-0 px-0"
+              >
+                <div className="d-flex">
+                  <span
+                    className={`px-1 justify-content-center text-center ${
+                      signal.status ? "text-success" : "text-warning"
+                    }`}
+                  >
+                    {signal.status ? "⦿" : "⦾"}
+                  </span>
+                  <div className="d-flex flex-column">
+                    <div className="d-flex">
+                      <span className="lh-sm">{itemName}</span>
+                      {!visible && (
+                        <span className="lh-sm px-1">
+                          {signal.inverted ? " ↶" : ""}{" "}
+                        </span>
+                      )}
+                      {visible && (
+                        <span
+                          className="lh-sm mx-1 text-primary"
+                          style={{ cursor: "pointer" }}
+                          title="Toggle inversion"
+                          onClick={() => {
+                            setSelected((prev) =>
+                              prev.map((s) =>
+                                s.signalPath === signal.signalPath
+                                  ? { ...s, inverted: !s.inverted }
+                                  : s
+                              )
+                            );
+                          }}
+                        >
+                          {signal.inverted ? "↶" : "↑"}
+                        </span>
+                      )}
+                      {visible && (
+                        <span
+                          className="lh-sm mx-1 text-danger"
+                          style={{ cursor: "pointer" }}
+                          title="Remove signal"
+                          onClick={() => {
+                            setSelected((prev) =>
+                              prev.filter(
+                                (s) => s.signalPath !== signal.signalPath
+                              )
+                            );
+                          }}
+                        >
+                          Delete
+                        </span>
+                      )}
+                    </div>
 
-                  <small className="text-muted lh-1">
-                    ({parsed.subsystemName}
-                    {parsed.id}_{parsed.localSignalName})
-                  </small>
+                    <small className="text-muted lh-1">
+                      ({parsed.subsystemName}→{parsed.localSignalName})
+                    </small>
+                  </div>
                 </div>
-              </div>
-            </li>
+              </li>
+            )
           );
         })}
       </ul>
