@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
@@ -34,25 +34,26 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
     }));
   };
 
-  const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocalItem((prevItem) => ({
-      ...prevItem,
-      event_id: Number(e.target.value),
-    }));
-  };
-
   const [isEditing, setIsEditing] = useState(false);
   const [localItem, setLocalItem] = useState(item);
-  
+
+  useEffect(() => {
+    if (!isEditing) setLocalItem(item);
+  }, [item]);
+
+  const selectedBroadcaster = useMemo(
+    () => [localItem.broadcaster],
+    [localItem.broadcaster]
+  );
+
+  const selectedAuxiliaryBroadcaster = useMemo(
+    () => [localItem.auxiliaryBroadcaster],
+    [localItem.auxiliaryBroadcaster]
+  );
+
   const handleEditClick = () => {
     if (isEditing) onSave(localItem);
     setIsEditing(!isEditing);
-  };
-  const handleLogicChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocalItem((prevItem) => ({
-      ...prevItem,
-      logic: String(e.target.value),
-    }));
   };
 
   return (
@@ -74,7 +75,7 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
               signalHub={signalHubList}
               id={localItem.id}
               signalApiData={signalApiData}
-              selectedValues={[localItem.broadcaster]}
+              selectedValues={selectedBroadcaster}
               multiple={false}
               name="Broadcaster"
               allowedTypes={[SignalType.Broadcaster]}
@@ -98,7 +99,7 @@ const SignalItem: React.FC<SignalItemComponentProps> = ({
               signalHub={signalHubList}
               id={localItem.id}
               signalApiData={signalApiData}
-              selectedValues={[localItem.auxiliaryBroadcaster]}
+              selectedValues={selectedAuxiliaryBroadcaster}
               multiple={false}
               name="Broadcaster(Auxiliary)"
               allowedTypes={[SignalType.Broadcaster]}
