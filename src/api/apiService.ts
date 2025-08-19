@@ -98,7 +98,7 @@ export const getWifiState = async (): Promise<WifiState> => {
 };
 
 export const setWifiConfig = async (payload: WifiState): Promise<void> => {
-  await axios.put(apiBaseUrl + "/wifi-confi", payload, {
+  await axios.put(apiBaseUrl + "/wifi-config", payload, {
     headers: { "Content-Type": "application/json" },
   });
 };
