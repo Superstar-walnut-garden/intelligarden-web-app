@@ -47,7 +47,7 @@ const SignalPicker: React.FC<SignalPickerProps> = ({
 
   useEffect(() => {
     setSelected(selectedValues);
-  }, [signalApiData]);
+  }, [selectedValues]);
 
   const handleBack = () => {
     setPath((prev) => prev.slice(0, -1));
