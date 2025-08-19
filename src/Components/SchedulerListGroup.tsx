@@ -10,7 +10,6 @@ interface SchedulerListGroupProps {
   onRemove: (id: number) => void;
   currentTime: string;
   currentWeekday: string;
-  eventList: Event[];
 }
 
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
@@ -20,13 +19,11 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   onRemove,
   currentTime,
   currentWeekday,
-  eventList,
 }) => {
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
       id: nextId(),
       name: "Untitled Schedule",
-      event_id: -1,
       weekday: "1100000",
       start: "00:00",
       duration: "01:30",
@@ -34,7 +31,6 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
       status: false,
       mode: "weekly",
       skipped: false,
-      skipEvent_id: -1,
     };
     onCreate(newItem);
   };
@@ -91,7 +87,6 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
             item={item}
             onRemove={(id) => handleRemoveItem(id)}
             onSave={(updatedItem) => handleSave(updatedItem)}
-            eventList={eventList}
           />
         ))}
       </div>

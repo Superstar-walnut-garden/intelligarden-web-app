@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { SignalApiData, SignalHubItem } from "../api/apiService";
+import { SignalApiData, SignalHubItem, SignalMode } from "../api/apiService";
 import SignalItem from "../Components/SignalItem";
 
 interface SignalListGroupProps {
@@ -25,7 +25,9 @@ const SignalListGroup: React.FC<SignalListGroupProps> = ({
       id: nextId(),
       name: "Untitled Signal",
       status: false,
-      broadcaster: "",
+      mode: SignalMode.SingleSource,
+      broadcaster: { signalPath: "", status: false, inverted: false },
+      auxiliaryBroadcaster: { signalPath: "", status: false, inverted: false },
       listeners: [],
     };
     onCreate(newItem);

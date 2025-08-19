@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
-import { Event } from "../Components/EventItem";
 import ItemTitle from "./ItemTitle";
 
 export interface GPIOItemProps {
@@ -15,14 +14,12 @@ export interface GPIOItemProps {
 
 interface GPIOItemComponentProps {
   item: GPIOItemProps;
-  eventList: Event[];
   onRemove: (pin: number) => void;
   onSave: (item: GPIOItemProps) => void;
 }
 
 const GPIOItem: React.FC<GPIOItemComponentProps> = ({
   item,
-  eventList,
   onRemove,
   onSave,
 }) => {
@@ -34,13 +31,6 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
     setLocalItem((prevItem) => ({
       ...prevItem,
       name: text,
-    }));
-  };
-
-  const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocalItem((prevItem) => ({
-      ...prevItem,
-      event_id: Number(e.target.value),
     }));
   };
 
@@ -103,28 +93,6 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
           >
             <option value={0}>Input</option>
             <option value={1}>Output</option>
-          </select>
-        </div>
-        <div className="d-flex align-items-center w-100 mb-1">
-          <label className="text-muted w-auto mx-2">
-            {" "}
-            {localItem.mode === 1 ? "Listen to:" : "Broadcast to:"}{" "}
-          </label>
-          <select
-            title="eventID"
-            className={`w-auto mx-1 ${
-              isEditing ? "form-control" : "form-control-plaintext text-muted"
-            }`}
-            value={localItem.event_id}
-            onChange={handleEventChange}
-            disabled={!isEditing}
-          >
-            <option value={-1}>No events assigned!</option>
-            {eventList.map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.name}
-              </option>
-            ))}
           </select>
         </div>
       </div>

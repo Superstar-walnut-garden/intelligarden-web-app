@@ -3,13 +3,10 @@ import WeekSelector from "./WeekSelector";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
-import { Event } from "../Components/EventItem";
-import EventPicker from "../Components/EventPicker";
 import ItemTitle from "./ItemTitle";
 
 export interface SchedulerItemProps {
   id: number;
-  event_id: number;
   weekday: string;
   start: string;
   duration: string;
@@ -18,19 +15,16 @@ export interface SchedulerItemProps {
   name: string;
   mode: string;
   skipped: boolean;
-  skipEvent_id: number;
 }
 
 interface SchedulerItemComponentProps {
   item: SchedulerItemProps;
-  eventList: Event[];
   onRemove: (id: number) => void;
   onSave: (item: SchedulerItemProps) => void;
 }
 
 const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
   item,
-  eventList,
   onRemove,
   onSave,
 }) => {
@@ -65,12 +59,6 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
     }));
   };
 
-  const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocalItem((prevItem) => ({
-      ...prevItem,
-      event_id: Number(e.target.value),
-    }));
-  };
   const handleModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLocalItem((prevItem) => ({
       ...prevItem,
@@ -109,38 +97,6 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
       <div className="d-flex flex-column align-items-center w-100 mb-3">
         <div className="d-flex align-items-center w-100 mb-1">
           <label className="text-muted w-auto mx-2"> ID: {item.id}</label>
-        </div>
-        <div className="d-flex align-items-center w-100 mb-1">
-          <label className="text-muted w-auto mx-2"> Event: </label>
-          <select
-            title="eventID"
-            className={`w-auto mx-1 ${
-              isEditing ? "form-control" : "form-control-plaintext text-muted"
-            }`}
-            value={localItem.event_id}
-            onChange={handleEventChange}
-            disabled={!isEditing}
-          >
-            <option value={-1}>No events assigned!</option>
-            {eventList.map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={`d-flex align-items-center w-100 mb-1 `}>
-          <label className="text-muted w-auto mx-2"> Skip Event: </label>
-          <EventPicker
-            value={localItem.skipEvent_id}
-            onChange={(id: number) => {
-              setLocalItem((prevItem) => ({
-                ...prevItem,
-                skipEvent_id: id,
-              }));
-            }}
-            disabled={!isEditing}
-          />
         </div>
         <div className="d-flex align-items-center w-100 mb-1">
           <label className="text-muted w-auto mx-2"> Mode: </label>

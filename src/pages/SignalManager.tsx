@@ -52,7 +52,7 @@ const SignalManager: React.FC = () => {
       await ApiService.deleteSignal(id);
       getList();
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("Error deleting signal:", error);
       alert("Error deleting signal:" + error);
     }
   };
@@ -62,7 +62,7 @@ const SignalManager: React.FC = () => {
       await ApiService.modifySignal(signal.id, signal);
       getList();
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("Error deleting signal:", error);
       alert("Error creating signal:" + error);
     }
   };

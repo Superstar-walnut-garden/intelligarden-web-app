@@ -131,7 +131,7 @@ export const setHotspotConfig = async (
 // -----------------------
 export const getScheduleList = async (): Promise<SchedulerItemProps[]> => {
   const response = await axios.get<SchedulerItemProps[]>(
-    apiBaseUrl + "/Scheduler"
+    apiBaseUrl + "/scheduler"
   );
   return response.data;
 };
@@ -139,18 +139,18 @@ export const getScheduleList = async (): Promise<SchedulerItemProps[]> => {
 export const createSchedule = async (
   item: SchedulerItemProps
 ): Promise<void> => {
-  await axios.post(apiBaseUrl + "/Scheduler", item);
+  await axios.post(apiBaseUrl + "/scheduler", item);
 };
 
 export const deleteSchedule = async (id: number): Promise<void> => {
-  await axios.delete(apiBaseUrl + "/Scheduler?id=" + id);
+  await axios.delete(apiBaseUrl + "/scheduler?id=" + id);
 };
 
 export const modifySchedule = async (
   id: number,
   updatedItem: Partial<SchedulerItemProps>
 ): Promise<void> => {
-  await axios.put(apiBaseUrl + "/Scheduler?id=" + id, updatedItem);
+  await axios.put(apiBaseUrl + "/scheduler?id=" + id, updatedItem);
 };
 
 // -----------------------
