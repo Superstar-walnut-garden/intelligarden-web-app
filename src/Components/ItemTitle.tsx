@@ -5,12 +5,14 @@ interface ItemTitleProps {
   title?: string;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
+  placeholder?: string;
 }
 
 const ItemTitle: React.FC<ItemTitleProps> = ({
   title = "Unnamed Title",
   isEditing = false,
   onTextChange,
+  placeholder = "",
 }) => {
   const [titleText, setTitleText] = useState(title);
   return (
@@ -19,6 +21,7 @@ const ItemTitle: React.FC<ItemTitleProps> = ({
         <input
           title="name"
           type="text"
+          placeholder={placeholder}
           className={`w-auto mx-1 bg-secondary border-0 text-white text-center fw-bold ${
             isEditing ? "form-control bg-primary" : "form-control-plaintext"
           }`}
@@ -29,6 +32,7 @@ const ItemTitle: React.FC<ItemTitleProps> = ({
           }}
           disabled={!isEditing}
         />
+        <style>{`input::placeholder {color: darkgray}`}</style>
       </div>
     </>
   );
