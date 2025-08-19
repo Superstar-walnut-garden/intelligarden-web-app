@@ -81,7 +81,7 @@ const Home = () => {
           />
           <Widget
             title="Manage I/Os"
-            info="Setup gpios and ports"
+            info="Setup Gpios & Ports"
             link="/pin-manager"
             bgColor="#bbdd88"
           />
