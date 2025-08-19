@@ -70,7 +70,7 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
         <div className="d-flex align-items-center w-100 mb-1">
           <label className="text-muted w-auto"> Pin: </label>
           <input
-            title="name"
+            title="pin"
             type="text"
             className={`w-auto mx-1 ${
               isEditing ? "form-control" : "form-control-plaintext text-muted"
@@ -81,7 +81,7 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
           />
         </div>
         <div className="d-flex align-items-center w-100 mb-1">
-          <label className="text-muted w-auto mx-2"> Mode: </label>
+          <label className="text-muted w-auto"> Mode: </label>
           <select
             title="mode"
             className={`w-auto mx-1 ${
