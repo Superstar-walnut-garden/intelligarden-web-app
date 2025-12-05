@@ -122,10 +122,8 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
             item.status ? "btn-success" : "btn-secondary"
           }`}
           onClick={() => {
-            if (localItem.event_id === -1) {
-              localItem.status = !localItem.status;
-              onSave(localItem);
-            }
+            localItem.status = !localItem.status;
+            onSave(localItem);
           }}
         >
           {item.status ? "I/O: High" : "I/O: Low"}
