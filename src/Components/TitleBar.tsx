@@ -9,9 +9,11 @@ interface TitleBarProps {
 const TitleBar: React.FC<TitleBarProps> = ({ title = "Unnamed Title" }) => {
   return (
     <>
-      <div className="d-flex align-items-center justify-content-between border-bottom mb-4">
-        <HomeButton />
-        <div className="flex-grow-1 d-flex align-items-center justify-content-center">
+      <div className="d-flex align-items-center border-bottom mb-4 bg-gradient bg-light">
+        <div className="position-absolute start-0">
+          <HomeButton />
+        </div>
+        <div className="mx-auto">
           <h1 className=" text-center">{title}</h1>
         </div>
       </div>

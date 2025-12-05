@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GenericListGroup from "../Components/GenericListGroup";
 import TitleBar from "../Components/TitleBar";
-import ThermostatItem from "../Components/ThermostatItem"
+import ThermostatItem from "../Components/ThermostatItem";
 import * as ApiService from "../api/apiService";
 import { ThermostatApiData } from "../api/apiService";
 import { TempSensorApiData } from "../api/apiService";
@@ -25,7 +25,7 @@ const ThermostatManagerPage: React.FC = () => {
       const data = await ApiService.getThermostatList();
       setItems(data);
     } catch (error) {
-      console.error('Error fetching schedule list:', error);
+      console.error("Error fetching schedule list:", error);
     }
   };
 
@@ -34,7 +34,7 @@ const ThermostatManagerPage: React.FC = () => {
     try {
       await ApiService.createThermostate(newIOData);
     } catch (error) {
-      console.error('Error creating Thermostat:', error);
+      console.error("Error creating Thermostat:", error);
     }
     fetchList(); //get updated list
   };
@@ -43,16 +43,16 @@ const ThermostatManagerPage: React.FC = () => {
     try {
       await ApiService.deleteThermostat(id);
     } catch (error) {
-      console.error('Error deleting Thermostat:', error);
+      console.error("Error deleting Thermostat:", error);
     }
     fetchList(); //get updated list
   };
 
   const modifyThermostat = async (updatedItem: ThermostatApiData) => {
     try {
-      await ApiService.modifyThermostat(updatedItem);
+      await ApiService.modifyThermostat(updatedItem.id, updatedItem);
     } catch (error) {
-      console.error('Error modifying Thermostat:', error);
+      console.error("Error modifying Thermostat:", error);
     }
     fetchList(); // get updated list
   };
@@ -81,7 +81,7 @@ const ThermostatManagerPage: React.FC = () => {
               setpoint: 20,
               event_id: 0,
               status: false,
-              sensor: "-1"
+              sensor: "-1",
             }}
           />
         </div>

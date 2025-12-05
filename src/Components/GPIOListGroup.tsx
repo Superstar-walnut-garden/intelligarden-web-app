@@ -2,14 +2,12 @@ import React from "react";
 import GPIOItem from "./GPIOItem";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { GPIOItemProps } from "./GPIOItem";
-import {Event} from "../Components/EventItem";
 
 interface GPIOListGroupProps {
   items: GPIOItemProps[];
   onCreate: (item: GPIOItemProps) => void;
   onSave: (item: GPIOItemProps) => void;
   onRemove: (id: number) => void;
-  eventList: Event[];
 }
 
 const GPIOListGroup: React.FC<GPIOListGroupProps> = ({
@@ -17,7 +15,6 @@ const GPIOListGroup: React.FC<GPIOListGroupProps> = ({
   onSave,
   onCreate,
   onRemove,
-  eventList,
 }) => {
   const handleAddItem = () => {
     const input = window.prompt("Enter pin number:");
@@ -41,10 +38,10 @@ const GPIOListGroup: React.FC<GPIOListGroupProps> = ({
   const handleRemoveItem = (id: number) => {
     onRemove(id);
   };
-  
+
   const handleSave = (item: GPIOItemProps) => {
     onSave(item);
-  }
+  };
 
   return (
     <div
@@ -61,7 +58,6 @@ const GPIOListGroup: React.FC<GPIOListGroupProps> = ({
             item={item}
             onRemove={(id) => handleRemoveItem(id)}
             onSave={(updatedItem) => handleSave(updatedItem)}
-            eventList={eventList}
           />
         ))}
       </div>

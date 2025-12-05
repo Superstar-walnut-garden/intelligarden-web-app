@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import { TempSensorApiData } from "../api/apiService";
-
+import ItemTitle from "../Components/ItemTitle";
 
 interface TempSensorItemComponentProps {
   item: TempSensorApiData;
@@ -14,11 +14,11 @@ interface TempSensorItemComponentProps {
 const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
   item,
   onRemove,
-  onSave
+  onSave,
 }) => {
-
   const encode64BitNumberToBase62 = (num: number) => {
-    const BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const BASE62 =
+      "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     let bigIntNum = BigInt(num);
     bigIntNum = (bigIntNum >> 8n) & ((1n << 48n) - 1n);
 
@@ -35,10 +35,10 @@ const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
     onRemove(localItem.id);
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalItem(prevItem => ({
+  const handleNameChange = (name: string) => {
+    setLocalItem((prevItem) => ({
       ...prevItem,
-      name: e.target.value
+      name: name,
     }));
   };
 
@@ -49,32 +49,36 @@ const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
     setIsEditing(!isEditing);
   };
 
+  useEffect(() => {
+    if (!isEditing) setLocalItem(item);
+  }, [item]);
+
   return (
     <div
       className={`list-group-item ${
         isEditing ? "border-primary" : ""
-      } d-flex flex-column align-items-start m-2 border p-2 rounded p-2`}>
-      <div className="d-flex-column align-items-center w-100 mb-1">
-        <div className="d-flex align-items-center w-100 mb-1">
-          <label className="text-muted w-auto"> Name: </label>
-          <input
-            title="name"
-            type="text"
-            className={`w-auto mx-1 ${isEditing ? "form-control" : "form-control-plaintext text-muted"}`}
-            value={localItem.name}
-            onChange={handleNameChange}
-            disabled={!isEditing} 
-          />
-          <label
-            title="id"
-            className={`form-control-plaintext text-muted w-auto mx-1`}
-          >{"(ID: " + encode64BitNumberToBase62(localItem.id) + ")"}</label>
-        </div>
+      } d-flex flex-column m-2 border p-0 rounded`}
+    >
+      <ItemTitle
+        title={localItem.name}
+        isEditing={isEditing}
+        onTextChange={handleNameChange}
+        placeholder="Untitled Sensor"
+      />
+      <div className="d-flex-column align-items-center w-100 mb-1 p-2">
+        <label
+          title="id"
+          className={`form-control-plaintext text-muted w-auto`}
+        >
+          {"Sensor ID: " + encode64BitNumberToBase62(localItem.id)}
+        </label>
         <div className="d-flex align-items-center w-100 mb-1">
           <label
             title="id"
             className={`form-control-plaintext text-muted w-auto`}
-          >{"Temp: " + localItem.temp + "C"}</label>
+          >
+            {"Temp: " + localItem.temp + "C"}
+          </label>
         </div>
         <div className="d-flex align-items-center w-100 mb-3">
           <div className="d-flex flex-column">
@@ -99,14 +103,14 @@ const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
           <button
             className={`btn w-100 mx-1 ${
               item.status ? "btn-success" : "btn-secondary"
-            }`} 
+            }`}
             disabled
           >
             {item.status ? "Connected" : "Disconnected"}
           </button>
         </div>
+      </div>
     </div>
-  </div>
   );
 };
 

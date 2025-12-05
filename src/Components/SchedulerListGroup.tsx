@@ -2,7 +2,6 @@ import React from "react";
 import SchedulerItem from "./SchedulerItem";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SchedulerItemProps } from "./SchedulerItem";
-import {Event} from "../Components/EventItem";
 
 interface SchedulerListGroupProps {
   items: SchedulerItemProps[];
@@ -11,7 +10,6 @@ interface SchedulerListGroupProps {
   onRemove: (id: number) => void;
   currentTime: string;
   currentWeekday: string;
-  eventList: Event[];
 }
 
 const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
@@ -21,13 +19,11 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
   onRemove,
   currentTime,
   currentWeekday,
-  eventList,
 }) => {
   const handleAddItem = () => {
     const newItem: SchedulerItemProps = {
       id: nextId(),
       name: "Untitled Schedule",
-      event_id: -1,
       weekday: "1100000",
       start: "00:00",
       duration: "01:30",
@@ -35,7 +31,6 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
       status: false,
       mode: "weekly",
       skipped: false,
-      skipEvent_id: -1
     };
     onCreate(newItem);
   };
@@ -46,28 +41,27 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
 
   function nextId() {
     let newId = 1;
-    while (items.some(item => item.id === newId)) {
+    while (items.some((item) => item.id === newId)) {
       newId++;
     }
     return newId;
   }
 
-  
   const handleSave = (item: SchedulerItemProps) => {
     onSave(item);
-  }
+  };
 
   const getWeekdayName = (weekday: string) => {
     let index = 0;
     let foundWeekday: string = "Unknown";
-    if(weekday) {
+    if (weekday) {
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       for (let i = 0; i < 7; i++) {
         if (weekday[i] === "1") index = i;
       }
       foundWeekday = days[index];
     }
-    return foundWeekday
+    return foundWeekday;
   };
 
   return (
@@ -77,7 +71,10 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
     >
       <div className="d-flex align-items-center w-100">
         <label className="text-muted w-auto mx-2"> Time: {currentTime}</label>
-        <label className="text-muted w-auto mx-2"> Weekday: {getWeekdayName(currentWeekday)}</label>
+        <label className="text-muted w-auto mx-2">
+          {" "}
+          Weekday: {getWeekdayName(currentWeekday)}
+        </label>
         <label className="text-muted w-auto mx-2"> Date: </label>
       </div>
       <div
@@ -90,7 +87,6 @@ const SchedulerListGroup: React.FC<SchedulerListGroupProps> = ({
             item={item}
             onRemove={(id) => handleRemoveItem(id)}
             onSave={(updatedItem) => handleSave(updatedItem)}
-            eventList={eventList}
           />
         ))}
       </div>
