@@ -50,9 +50,9 @@ const Home = () => {
             bgColor="#f3e5f5"
           />
           <Widget
-            title="Soil Sensor Settings"
-            info="Setup Soil Moisture Sensors"
-            link="/"
+            title="Data Logging"
+            info="Config Common Data Logging Settings"
+            link="/data-logging-page"
             bgColor="#aaebee"
           />
           <Widget

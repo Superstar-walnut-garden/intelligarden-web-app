@@ -5,8 +5,37 @@ import { GPIOItemProps } from "../Components/GPIOItem";
 const apiBaseUrl = "/api";
 
 // -----------------------
-// Display API
+// Logging API
 // -----------------------
+export enum LogDispatcherStatus {
+  Idle = "Idle",
+  Running = "Running",
+  StorageFullError = "StorageFullError",
+  StorageNotReadyError = "StorageNotReadyError",
+}
+export interface DataLoggingConfigApiData {
+  maxFileSizeBytes: number;
+  maxFileRotationCount: number;
+  basePath: string;
+  status: LogDispatcherStatus;
+  enabled: boolean;
+}
+
+export const getDataLoggingConfig =
+  async (): Promise<DataLoggingConfigApiData> => {
+    const response = await axios.get<DataLoggingConfigApiData>(
+      apiBaseUrl + "/log-config"
+    );
+    return response.data;
+  };
+
+export const setDataLoggingConfig = async (
+  payload: DataLoggingConfigApiData
+): Promise<void> => {
+  await axios.put(apiBaseUrl + "/log-config", payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
 
 // -----------------------
 // Signal API
@@ -176,6 +205,9 @@ export interface TempSensorApiData {
   name: string;
   status: boolean;
   temp: number;
+  logInterval: number;
+  logOnlyOnChange: boolean;
+  loggingEnabled: boolean;
 }
 
 export const getSensorList = async (): Promise<any> => {

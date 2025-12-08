@@ -10,6 +10,7 @@ import PinManagerPage from "./pages/PinManagerPage";
 import DisplaySettings from "./pages/DisplaySettings";
 import ThermostatManagerPage from "./pages/ThermostatManagerPage";
 import TimezoneSettings from "./pages/TimezoneSettings";
+import DataLoggingPage from "./pages/DataLoggingPage";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path="/DisplaySettings" element={<DisplaySettings />} />
         <Route path="thermostat-manager" element={<ThermostatManagerPage />} />
         <Route path="timezone-settings" element={<TimezoneSettings />} />
+        <Route path="data-logging-page" element={<DataLoggingPage />} />
         <Route path="*" element={<Home />} /> {/* Fallback route */}
       </Routes>
     </Router>

@@ -4,6 +4,8 @@ import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import { TempSensorApiData } from "../api/apiService";
 import ItemTitle from "../Components/ItemTitle";
+import LogConfig from "./LogConfig";
+import { LogConfigProps } from "./LogConfig";
 
 interface TempSensorItemComponentProps {
   item: TempSensorApiData;
@@ -96,6 +98,19 @@ const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
             </button>
           </div>
         </div>
+        <LogConfig
+          config={{
+            logInterval: item.logInterval,
+            logOnlyOnChange: item.logOnlyOnChange,
+            loggingEnabled: item.loggingEnabled,
+          }}
+          onChange={(config: LogConfigProps) => {
+            localItem.logInterval = config.logInterval;
+            localItem.logOnlyOnChange = config.logOnlyOnChange;
+            localItem.loggingEnabled = config.loggingEnabled;
+          }}
+          disabled={!isEditing}
+        />
         <div className="d-flex w-100">
           <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
             Remove
