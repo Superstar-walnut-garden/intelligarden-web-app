@@ -3,10 +3,24 @@ import TitleBar from "../Components/TitleBar";
 import * as ApiService from "../api/apiService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Tab, Tabs } from "react-bootstrap";
+import LogFilesPage from "./LogFilesPage";
 
 const DataLoggingPage: React.FC = () => {
   const [logConfig, setLogConfig] =
     useState<ApiService.DataLoggingConfigApiData | null>(null);
+
+  const [logFiles, setLogFiles] = useState<ApiService.LogFilesResponse | null>(
+    null
+  );
+
+  const fetchLogFiles = async () => {
+    try {
+      const logFiles = await ApiService.getLogFiles();
+      setLogFiles(logFiles);
+    } catch (error) {
+      console.error("Error fetching log files:", error);
+    }
+  };
 
   const fetchConfig = async () => {
     try {
@@ -19,6 +33,10 @@ const DataLoggingPage: React.FC = () => {
   // retrive config from api
   useEffect(() => {
     fetchConfig();
+  }, []);
+
+  useEffect(() => {
+    fetchLogFiles();
   }, []);
 
   // save config to api
@@ -156,7 +174,11 @@ const DataLoggingPage: React.FC = () => {
               )}
             </Tab>
             <Tab eventKey="raw" title="Raw Data">
-              {/* Raw data content */}
+              {logFiles ? (
+                <LogFilesPage logFilesData={logFiles} />
+              ) : (
+                <div>Loading...</div>
+              )}
             </Tab>
             <Tab eventKey="charts" title="Charts & Analysis">
               {/* Charts content */}

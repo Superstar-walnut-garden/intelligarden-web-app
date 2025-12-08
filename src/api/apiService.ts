@@ -5,6 +5,48 @@ import { GPIOItemProps } from "../Components/GPIOItem";
 const apiBaseUrl = "/api";
 
 // -----------------------
+// Log File Manager API
+// -----------------------
+
+export interface LogFileContent {
+  [timestamp: string]: Record<string, any>;
+}
+
+// GET handler for a single file
+export const getLogFile = async (path: string): Promise<LogFileContent> => {
+  const response = await axios.get<LogFileContent>(
+    `/api/log-file?path=${encodeURIComponent(path)}`
+  );
+  return response.data;
+};
+
+// Define types for clarity
+export interface LogFile {
+  name: string;
+  path: string;
+  size: number;
+}
+
+export interface LogFolder {
+  name: string;
+  path: string;
+  folders: LogFolder[];
+  files: LogFile[];
+}
+
+export interface LogFilesResponse {
+  path: string;
+  folders: LogFolder[];
+  files: LogFile[];
+}
+
+// API handler
+export const getLogFiles = async (): Promise<LogFilesResponse> => {
+  const response = await axios.get<LogFilesResponse>(apiBaseUrl + "/log-files");
+  return response.data;
+};
+
+// -----------------------
 // Logging API
 // -----------------------
 export enum LogDispatcherStatus {
