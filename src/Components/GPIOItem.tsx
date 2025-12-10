@@ -3,6 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import ItemTitle from "./ItemTitle";
+import LogConfig from "./LogConfig";
+import { LogConfigProps } from "./LogConfig";
 
 export interface GPIOItemProps {
   id: number;
@@ -10,6 +12,9 @@ export interface GPIOItemProps {
   event_id: number;
   status: boolean;
   name: string;
+  logInterval: number;
+  logOnlyOnChange: boolean;
+  loggingEnabled: boolean;
 }
 
 interface GPIOItemComponentProps {
@@ -96,6 +101,19 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
           </select>
         </div>
       </div>
+      <LogConfig
+        config={{
+          logInterval: item.logInterval,
+          logOnlyOnChange: item.logOnlyOnChange,
+          loggingEnabled: item.loggingEnabled,
+        }}
+        onChange={(config: LogConfigProps) => {
+          localItem.logInterval = config.logInterval;
+          localItem.logOnlyOnChange = config.logOnlyOnChange;
+          localItem.loggingEnabled = config.loggingEnabled;
+        }}
+        disabled={!isEditing}
+      />
 
       <div className="d-flex align-items-center w-100 m-2 mb-3">
         <div className="d-flex flex-column">

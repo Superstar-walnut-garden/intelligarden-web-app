@@ -15,7 +15,7 @@ export interface LogFileContent {
 // GET handler for a single file
 export const getLogFile = async (path: string): Promise<LogFileContent> => {
   const response = await axios.get<LogFileContent>(
-    `/api/log-file?path=${encodeURIComponent(path)}`
+    `/api/file?path=${encodeURIComponent(path)}`
   );
   return response.data;
 };
@@ -42,7 +42,7 @@ export interface LogFilesResponse {
 
 // API handler
 export const getLogFiles = async (): Promise<LogFilesResponse> => {
-  const response = await axios.get<LogFilesResponse>(apiBaseUrl + "/log-files");
+  const response = await axios.get<LogFilesResponse>(apiBaseUrl + "/files");
   return response.data;
 };
 
