@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import SchedulerListGroup from "../Components/SchedulerListGroup";
 import TitleBar from "../Components/TitleBar";
 import { SchedulerItemProps } from "../Components/SchedulerItem";
-import { Event } from "../Components/EventItem";
-import * as ApiService from "../api/apiService"
+import * as ApiService from "../api/apiService";
 
 const PumpSettings: React.FC = () => {
-  const [schedulerItems, setSchedulerItems] = useState<SchedulerItemProps[]>([]);
+  const [schedulerItems, setSchedulerItems] = useState<SchedulerItemProps[]>(
+    []
+  );
   const [currentTime, setCurrentTime] = useState<string>("");
   const [currentWeekday, setCurrentWeekday] = useState<string>("");
-  const [events, setEvents] = useState<Event[]>([]);
   useEffect(() => {
     fetchScheduleList();
     fetchCurrentTime();
@@ -18,20 +18,12 @@ const PumpSettings: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  
-  useEffect(() => {
-    const getEventList = async () => {
-      setEvents(await ApiService.getEventList());
-    };
-    getEventList();
-  }, []);
-
   const fetchScheduleList = async () => {
     try {
       const response = await ApiService.getScheduleList();
       setSchedulerItems(response);
     } catch (error) {
-      console.error('Error fetching schedule list:', error);
+      console.error("Error fetching schedule list:", error);
     }
   };
 
@@ -46,12 +38,11 @@ const PumpSettings: React.FC = () => {
   };
 
   const createSchedule = async (item: SchedulerItemProps) => {
-    
     const newSchedule = { ...item };
     try {
       await ApiService.createSchedule(newSchedule);
     } catch (error) {
-      console.error('Error creating schedule:', error);
+      console.error("Error creating schedule:", error);
     }
     fetchScheduleList(); //get updated schedule list
   };
@@ -60,21 +51,27 @@ const PumpSettings: React.FC = () => {
     try {
       await ApiService.deleteSchedule(id);
     } catch (error) {
-      console.error('Error deleting schedule:', error);
+      console.error("Error deleting schedule:", error);
     }
     fetchScheduleList(); //get updated schedule list
   };
 
-  const modifySchedule = async (id: number, updatedItem: Partial<SchedulerItemProps>) => {
+  const modifySchedule = async (
+    id: number,
+    updatedItem: Partial<SchedulerItemProps>
+  ) => {
     try {
       await ApiService.modifySchedule(id, updatedItem);
-      setSchedulerItems(schedulerItems.map(item => (item.id === id ? { ...item, ...updatedItem } : item)));
+      setSchedulerItems(
+        schedulerItems.map((item) =>
+          item.id === id ? { ...item, ...updatedItem } : item
+        )
+      );
     } catch (error) {
-      console.error('Error modifying schedule:', error);
+      console.error("Error modifying schedule:", error);
     }
     fetchScheduleList(); // get updated schedule list
   };
-
 
   const handleSave = (item: SchedulerItemProps) => {
     modifySchedule(item.id, item);
@@ -93,9 +90,6 @@ const PumpSettings: React.FC = () => {
             onCreate={createSchedule}
             currentTime={currentTime}
             currentWeekday={currentWeekday}
-            eventList={events}
-            //onDelete={deleteSchedule} // Pass deleteSchedule function
-            //onCreate={createSchedule} // Pass createSchedule function
           />
         </div>
       </div>

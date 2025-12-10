@@ -2,22 +2,12 @@ import React, { useState, useEffect } from "react";
 import GPIOListGroup from "../Components/GPIOListGroup";
 import TitleBar from "../Components/TitleBar";
 import { GPIOItemProps } from "../Components/GPIOItem";
-import {Event} from "../Components/EventItem";
 import * as ApiService from "../api/apiService";
 
 const PinManagerPage: React.FC = () => {
   const [GPIOItems, setGPIOItems] = useState<GPIOItemProps[]>([]);
-  const [events, setEvents] = useState<Event[]>([]);
   useEffect(() => {
     fetchList();
-  }, []);
-
-  
-  useEffect(() => {
-    const getEventList = async () => {
-      setEvents(await ApiService.getEventList());
-    };
-    getEventList();
   }, []);
 
   const fetchList = async () => {
@@ -25,7 +15,7 @@ const PinManagerPage: React.FC = () => {
       const data = await ApiService.getGPIOList();
       setGPIOItems(data);
     } catch (error) {
-      console.error('Error fetching schedule list:', error);
+      console.error("Error fetching schedule list:", error);
     }
   };
 
@@ -34,7 +24,7 @@ const PinManagerPage: React.FC = () => {
     try {
       await ApiService.createGPIO(newIOData);
     } catch (error) {
-      console.error('Error creating GPIO:', error);
+      console.error("Error creating GPIO:", error);
     }
     fetchList(); //get updated list
   };
@@ -43,16 +33,16 @@ const PinManagerPage: React.FC = () => {
     try {
       await ApiService.deleteGPIO(id);
     } catch (error) {
-      console.error('Error deleting GPIO:', error);
+      console.error("Error deleting GPIO:", error);
     }
     fetchList(); //get updated list
   };
 
   const modifyGPIO = async (updatedItem: GPIOItemProps) => {
     try {
-      await ApiService.modifyGPIO(updatedItem);
+      await ApiService.modifyGPIO(updatedItem.id, updatedItem);
     } catch (error) {
-      console.error('Error modifying GPIO:', error);
+      console.error("Error modifying GPIO:", error);
     }
     fetchList(); // get updated list
   };
@@ -67,7 +57,6 @@ const PinManagerPage: React.FC = () => {
             onSave={modifyGPIO}
             onRemove={deleteGPIO}
             onCreate={createGPIO}
-            eventList={events}
           />
         </div>
       </div>

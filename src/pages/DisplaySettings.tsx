@@ -34,8 +34,8 @@ const DisplaySettings: React.FC = () => {
                 value={config.type}
                 onChange={handleTypeChange}>
                 <option>None</option>
-                <option value={"oled"}>OLED (I2C)</option>
-                <option value={"char"}>Char LCD (I2C)</option>
+                <option value={"Oled"}>OLED (I2C)</option>
+                <option value={"CharLcd"}>Char LCD (I2C)</option>
                 <option disabled>1bit GLCD (Parallel)</option>
                 <option disabled>TFT LCD HMI</option>
             </select>
