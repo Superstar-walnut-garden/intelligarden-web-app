@@ -5,8 +5,79 @@ import { GPIOItemProps } from "../Components/GPIOItem";
 const apiBaseUrl = "/api";
 
 // -----------------------
-// Display API
+// Log File Manager API
 // -----------------------
+
+export interface LogFileContent {
+  [timestamp: string]: Record<string, any>;
+}
+
+// GET handler for a single file
+export const getLogFile = async (path: string): Promise<LogFileContent> => {
+  const response = await axios.get<LogFileContent>(
+    `/api/file?path=${encodeURIComponent(path)}`
+  );
+  return response.data;
+};
+
+// Define types for clarity
+export interface LogFile {
+  name: string;
+  path: string;
+  size: number;
+}
+
+export interface LogFolder {
+  name: string;
+  path: string;
+  folders: LogFolder[];
+  files: LogFile[];
+}
+
+export interface LogFilesResponse {
+  path: string;
+  folders: LogFolder[];
+  files: LogFile[];
+}
+
+// API handler
+export const getLogFiles = async (): Promise<LogFilesResponse> => {
+  const response = await axios.get<LogFilesResponse>(apiBaseUrl + "/files");
+  return response.data;
+};
+
+// -----------------------
+// Logging API
+// -----------------------
+export enum LogDispatcherStatus {
+  Idle = "Idle",
+  Running = "Running",
+  StorageFullError = "StorageFullError",
+  StorageNotReadyError = "StorageNotReadyError",
+}
+export interface DataLoggingConfigApiData {
+  maxFileSizeBytes: number;
+  maxFileRotationCount: number;
+  basePath: string;
+  status: LogDispatcherStatus;
+  enabled: boolean;
+}
+
+export const getDataLoggingConfig =
+  async (): Promise<DataLoggingConfigApiData> => {
+    const response = await axios.get<DataLoggingConfigApiData>(
+      apiBaseUrl + "/log-config"
+    );
+    return response.data;
+  };
+
+export const setDataLoggingConfig = async (
+  payload: DataLoggingConfigApiData
+): Promise<void> => {
+  await axios.put(apiBaseUrl + "/log-config", payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
 
 // -----------------------
 // Signal API
@@ -176,6 +247,9 @@ export interface TempSensorApiData {
   name: string;
   status: boolean;
   temp: number;
+  logInterval: number;
+  logOnlyOnChange: boolean;
+  loggingEnabled: boolean;
 }
 
 export const getSensorList = async (): Promise<any> => {

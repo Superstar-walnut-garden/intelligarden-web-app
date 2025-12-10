@@ -27,6 +27,9 @@ const GPIOListGroup: React.FC<GPIOListGroupProps> = ({
           status: false,
           name: "Untitled IO",
           event_id: -1,
+          loggingEnabled: false,
+          logInterval: 60,
+          logOnlyOnChange: false,
         };
         onCreate(newItem);
       } else {
