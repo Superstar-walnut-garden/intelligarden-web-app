@@ -15,6 +15,8 @@ export interface GPIOItemProps {
   logInterval: number;
   logOnlyOnChange: boolean;
   loggingEnabled: boolean;
+  highDutyCycle?: number;
+  inverted?: boolean;
 }
 
 interface GPIOItemComponentProps {
@@ -43,6 +45,13 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
     setLocalItem((prevItem) => ({
       ...prevItem,
       mode: Number(e.target.value),
+    }));
+  };
+
+  const handleDutyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLocalItem((prevItem) => ({
+      ...prevItem,
+      highDutyCycle: Number(e.target.value),
     }));
   };
 
@@ -99,6 +108,51 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
             <option value={0}>Input</option>
             <option value={1}>Output</option>
           </select>
+        </div>
+        <div className="d-flex align-items-center w-100 mb-1">
+          <label className="text-muted w-auto"> High Dutycycle: </label>
+          <select
+            title="high dutycycle"
+            className={`w-auto mx-1 ${
+              isEditing ? "form-control" : "form-control-plaintext text-muted"
+            }`}
+            value={localItem.highDutyCycle}
+            onChange={handleDutyChange}
+            disabled={!isEditing}
+          >
+            <option value={10}>10%</option>
+            <option value={20}>20%</option>
+            <option value={30}>30%</option>
+            <option value={40}>40%</option>
+            <option value={50}>50%</option>
+            <option value={60}>60%</option>
+            <option value={70}>70%</option>
+            <option value={80}>80%</option>
+            <option value={90}>90%</option>
+            <option value={100}>100%</option>
+          </select>
+        </div>
+        {/* inversion checkbox */}
+        <div className="d-flex align-items-center w-100 mb-1">
+          <label
+            className="form-check-label text-muted"
+            htmlFor={`inverted-${localItem.id}`}
+          >
+            Invert
+          </label>
+          <input
+            className="form-check-input mx-1"
+            type="checkbox"
+            id={`inverted-${localItem.id}`}
+            checked={localItem.inverted || false}
+            onChange={(e) =>
+              setLocalItem((prevItem) => ({
+                ...prevItem,
+                inverted: e.target.checked,
+              }))
+            }
+            disabled={!isEditing}
+          />
         </div>
       </div>
       <LogConfig
