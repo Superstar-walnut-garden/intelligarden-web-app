@@ -90,7 +90,8 @@ const ThermostatItem: React.FC<ThermostatItemComponentProps> = ({
         <label className="text-muted w-auto"> Setpoint: </label>
         <input
           title="setpoint"
-          type="text"
+          type="number"
+          step="any"
           className={`w-auto mx-1 ${
             isEditing ? "form-control" : "form-control-plaintext text-muted"
           }`}
@@ -108,7 +109,8 @@ const ThermostatItem: React.FC<ThermostatItemComponentProps> = ({
         <label className="text-muted w-auto"> Alt-Setpoint: </label>
         <input
           title="altsetpoint"
-          type="text"
+          type="number"
+          step="any"
           className={`w-auto mx-1 ${
             isEditing ? "form-control" : "form-control-plaintext text-muted"
           }`}
@@ -126,7 +128,8 @@ const ThermostatItem: React.FC<ThermostatItemComponentProps> = ({
         <label className="text-muted w-auto"> Hysteresis: </label>
         <input
           title="hysteresis"
-          type="text"
+          type="number"
+          step="any"
           className={`w-auto mx-1 ${
             isEditing ? "form-control" : "form-control-plaintext text-muted"
           }`}
