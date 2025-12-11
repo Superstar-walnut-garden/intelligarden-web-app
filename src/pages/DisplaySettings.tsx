@@ -5,6 +5,7 @@ import * as ApiService from "../api/apiService";
 const DisplaySettings: React.FC = () => {
   const [config, setConfig] = useState<ApiService.DisplayConfig>({
     type: "oled",
+    address: 60,
   });
   useEffect(() => {
     const getDisplayConfig = async () => {
