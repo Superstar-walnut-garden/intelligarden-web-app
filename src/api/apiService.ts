@@ -318,6 +318,7 @@ export const modifyGPIO = async (
 // -----------------------
 export interface DisplayConfig {
   type: string;
+  address: number;
 }
 
 export const getDisplayConfig = async (): Promise<DisplayConfig> => {
