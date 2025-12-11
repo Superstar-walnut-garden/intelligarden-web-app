@@ -198,6 +198,28 @@ export const setHotspotConfig = async (
 };
 
 // -----------------------
+// temp sensor config API
+// -----------------------
+export interface TempSensorConfig {
+  sensorPin: number;
+}
+
+export const getTempSensorConfig = async (): Promise<TempSensorConfig> => {
+  const response = await axios.get<TempSensorConfig>(
+    apiBaseUrl + "/temp-sensor-config"
+  );
+  return response.data;
+};
+
+export const setTempSensorConfig = async (
+  payload: TempSensorConfig
+): Promise<void> => {
+  await axios.put(apiBaseUrl + "/temp-sensor-config", payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+// -----------------------
 // Schedule API
 // -----------------------
 export const getScheduleList = async (): Promise<SchedulerItemProps[]> => {
