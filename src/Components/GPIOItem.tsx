@@ -186,7 +186,15 @@ const GPIOItem: React.FC<GPIOItemComponentProps> = ({
         </div>
       </div>
       <div className="d-flex w-100 mb-1">
-        <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
+        <button
+          className="btn btn-danger w-100 mx-1"
+          onClick={() => {
+            const isConfirmed = window.confirm("Are You Sure to Delete?");
+            if (isConfirmed) {
+              onRemove(localItem.id);
+            }
+          }}
+        >
           Remove
         </button>
         <button

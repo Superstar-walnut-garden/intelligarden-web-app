@@ -4,6 +4,7 @@ import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import { TempSensorApiData, ThermostatApiData } from "../api/apiService";
 import ItemTitle from "../Components/ItemTitle";
+import SensorPicker from "./SensorPicker";
 
 interface ThermostatItemComponentProps {
   item: ThermostatApiData;
@@ -47,7 +48,7 @@ const ThermostatItem: React.FC<ThermostatItemComponentProps> = ({
         isEditing={isEditing}
         onTextChange={handleNameChange}
       />
-      <div className="d-flex-column align-items-center w-100 mb-1 p-2">
+      <div className="d-flex-column align-items-center w-100 mb-1 mx-2">
         <div className="d-flex align-items-center w-100 mb-1">
           <label
             title="id"
@@ -56,35 +57,19 @@ const ThermostatItem: React.FC<ThermostatItemComponentProps> = ({
             {"ID: " + localItem.id}
           </label>
         </div>
-        <div className="d-flex align-items-center w-100 mb-0">
-          <label
-            title="sensor"
-            className={`form-control-plaintext text-muted w-auto`}
-          >
-            Sensor:
-          </label>
-          <select
-            title="SensorListDropdown"
-            value={String(localItem.sensor)}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setLocalItem((prevItem) => ({
-                ...prevItem,
-                sensor: String(e.target.value),
-              }));
-            }}
-            disabled={!isEditing}
-            className={`w-auto mx-1 mb-0 ${
-              !isEditing ? "form-control-plaintext text-muted" : "form-control"
-            }`}
-          >
-            <option value={-1}>No sensors assigned!</option>
-            {sensorList.map((sensor) => (
-              <option key={sensor.id} value={sensor.id}>
-                {sensor.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      </div>
+      <div className="d-flex-column align-items-center w-100 mx-2 mb-2">
+        <SensorPicker
+          devices={sensorList}
+          isEditing={isEditing}
+          selectedId={localItem.sensor}
+          onChange={(selectedId: string) => {
+            setLocalItem((prevItem) => ({
+              ...prevItem,
+              sensor: selectedId,
+            }));
+          }}
+        />
       </div>
       <div className="d-flex align-items-center w-100 mb-1 mx-2">
         <label className="text-muted w-auto"> Setpoint: </label>
@@ -160,7 +145,15 @@ const ThermostatItem: React.FC<ThermostatItemComponentProps> = ({
         </div>
       </div>
       <div className="d-flex w-100">
-        <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
+        <button
+          className="btn btn-danger w-100 mx-1"
+          onClick={() => {
+            const isConfirmed = window.confirm("Are You Sure to Delete?");
+            if (isConfirmed) {
+              onRemove(localItem.id);
+            }
+          }}
+        >
           Remove
         </button>
         <button
