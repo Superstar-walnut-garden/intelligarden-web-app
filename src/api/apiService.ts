@@ -273,27 +273,20 @@ export interface VentDriveApiData extends FusionBusApiData {
   sensor: string;
 }
 
-export const getSensorList = async (): Promise<any> => {
-  const response = await axios.get(apiBaseUrl + "/temp-sensor");
+export const getFusionBusList = async (): Promise<any> => {
+  const response = await axios.get(apiBaseUrl + "/fusionbus");
   return response.data;
 };
 
-export const deleteSensor = async (id: number): Promise<void> => {
-  await axios.delete(apiBaseUrl + "/temp-sensor?id=" + id);
+export const deleteFusionBusItem = async (id: number): Promise<void> => {
+  await axios.delete(apiBaseUrl + "/fusionbus?id=" + id);
 };
 
-export const modifySensor = async (
+export const modifyFusionBusItem = async (
   id: number,
   item: TempSensorApiData | VentDriveApiData
 ): Promise<void> => {
-  await axios.put(apiBaseUrl + "/temp-sensor?id=" + id, item);
-};
-
-export const modifyVentDrive = async (
-  id: number,
-  item: VentDriveApiData
-): Promise<void> => {
-  await axios.put(apiBaseUrl + "/temp-sensor?id=" + id, item);
+  await axios.put(apiBaseUrl + "/fusionbus?id=" + id, item);
 };
 
 // -----------------------

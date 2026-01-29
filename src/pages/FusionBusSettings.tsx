@@ -26,7 +26,7 @@ const FusionBusSettings: React.FC = () => {
 
   const fetchList = async () => {
     try {
-      const data = await ApiService.getSensorList();
+      const data = await ApiService.getFusionBusList();
       setItems(data);
       // setItems(
       //   items.filter((item) => {
@@ -42,7 +42,7 @@ const FusionBusSettings: React.FC = () => {
 
   const deleteSensor = async (id: number) => {
     try {
-      await ApiService.deleteSensor(id);
+      await ApiService.deleteFusionBusItem(id);
     } catch (error) {
       console.error("Error deleting Sensor:", error);
     }
@@ -51,7 +51,7 @@ const FusionBusSettings: React.FC = () => {
 
   const modifySensor = async (updatedItem: VentDriveApiData) => {
     try {
-      await ApiService.modifyVentDrive(updatedItem.id, updatedItem);
+      await ApiService.modifyFusionBusItem(updatedItem.id, updatedItem);
     } catch (error) {
       console.error("Error modifying Sensor:", error);
     }
