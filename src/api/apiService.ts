@@ -242,14 +242,35 @@ export const getCurrentTime = async (): Promise<CurrentTimeData> => {
 // -----------------------
 // Sensor API
 // -----------------------
-export interface TempSensorApiData {
+export interface FusionBusApiData {
+  type: string;
   id: number;
   name: string;
   status: boolean;
-  temp: number;
   logInterval: number;
   logOnlyOnChange: boolean;
   loggingEnabled: boolean;
+}
+export interface TempSensorApiData extends FusionBusApiData {
+  temp: number;
+}
+export interface VentDriveApiData extends FusionBusApiData {
+  ventingPercent: number;
+  length: number;
+  stepPermm: number;
+  speed: number;
+  maxCompensation: number;
+  acceleration: number;
+  endstopExtraDistance: number;
+  currentState: string;
+  currentVentingPercent: number;
+  AutoHomeFlag: boolean;
+  invertDir: boolean;
+  invertEndstopPin: boolean;
+  autoTempControl: boolean;
+  closeStateTemp: Number;
+  openStateTemp: Number;
+  sensor: string;
 }
 
 export const getSensorList = async (): Promise<any> => {
@@ -263,7 +284,14 @@ export const deleteSensor = async (id: number): Promise<void> => {
 
 export const modifySensor = async (
   id: number,
-  item: TempSensorApiData
+  item: TempSensorApiData | VentDriveApiData
+): Promise<void> => {
+  await axios.put(apiBaseUrl + "/temp-sensor?id=" + id, item);
+};
+
+export const modifyVentDrive = async (
+  id: number,
+  item: VentDriveApiData
 ): Promise<void> => {
   await axios.put(apiBaseUrl + "/temp-sensor?id=" + id, item);
 };

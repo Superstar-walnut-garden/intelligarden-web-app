@@ -10,31 +10,31 @@ const Home = () => {
           <Widget
             title="WiFi Settings"
             info="Change WiFi or Hotspot settings"
-            link="/wifisettings"
+            link="/wifi-settings"
             bgColor="#ffebee"
           />
           <Widget
             title="Manage Schedulers"
             info="Schedule your irrigation, lighting and etc..."
-            link="/pumpsettings"
+            link="/schedulers"
             bgColor="#e3f2fd"
           />
           <Widget
-            title="Temperature Sensor Setup"
-            info="Setup your sensors"
-            link="/TempSensorSettings"
+            title="FusionBus Devices"
+            info="Setup External Sensors, Actuators and etc..."
+            link="/fusionbus-devices"
             bgColor="#e8f5e9"
           />
           <Widget
             title="Manage Thermostats"
             info="Setup your Temperature Controllers"
-            link="/thermostat-manager"
+            link="/thermostats"
             bgColor="#ffaaaa"
           />
           <Widget
             title="Firebase Settings"
             info="Configure Firebase"
-            link="/FirebaseSettings"
+            link="/firebase-settings"
             bgColor="#fff3e0"
           />
           <Widget
@@ -46,13 +46,13 @@ const Home = () => {
           <Widget
             title="Display Settings"
             info="Config Display Properties"
-            link="/DisplaySettings"
+            link="/display-settings"
             bgColor="#f3e5f5"
           />
           <Widget
             title="Data Logging"
             info="Config Common Data Logging Settings"
-            link="/data-logging-page"
+            link="/data-logging"
             bgColor="#aaebee"
           />
           <Widget
@@ -82,7 +82,7 @@ const Home = () => {
           <Widget
             title="Manage I/Os"
             info="Setup Gpios & Ports"
-            link="/pin-manager"
+            link="/io-manager"
             bgColor="#bbdd88"
           />
         </div>
