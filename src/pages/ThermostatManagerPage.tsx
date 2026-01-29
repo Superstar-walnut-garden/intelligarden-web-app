@@ -15,7 +15,7 @@ const ThermostatManagerPage: React.FC = () => {
 
   useEffect(() => {
     const getSensorList = async () => {
-      setSensorList(await ApiService.getSensorList());
+      setSensorList(await ApiService.getFusionBusList());
     };
     getSensorList();
   }, []);

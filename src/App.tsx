@@ -4,7 +4,6 @@ import PumpSettings from "./pages/PumpSettings";
 import Home from "./pages/Home";
 import WifiSettings from "./pages/WifiSettings";
 import FirebaseSettings from "./pages/FirebaseSettings";
-import TempSensorSettings from "./pages/TempSensorSettings";
 import SignalManager from "./pages/SignalManager";
 import PinManagerPage from "./pages/PinManagerPage";
 import DisplaySettings from "./pages/DisplaySettings";
