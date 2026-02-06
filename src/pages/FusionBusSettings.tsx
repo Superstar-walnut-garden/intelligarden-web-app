@@ -69,7 +69,7 @@ const FusionBusSettings: React.FC = () => {
             onRemove={deleteSensor}
             onSave={modifySensor}
             renderItem={(item, onSave, onRemove) => {
-              if (item.type === "VentDrive") {
+              if (item.type === "VentDrive" || item.type === "Unknown") {
                 return (
                   <VentDriveItem
                     item={item}
