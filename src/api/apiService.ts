@@ -292,6 +292,7 @@ export interface VentDriveApiData extends FusionBusApiData {
   autoTempControl: boolean;
   closeStateTemp: Number;
   openStateTemp: Number;
+  hysteresis: Number;
   sensor: string;
 }
 

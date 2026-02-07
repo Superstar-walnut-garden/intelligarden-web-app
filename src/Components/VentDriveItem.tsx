@@ -214,6 +214,26 @@ const VentDriveItem: React.FC<TempSensorItemComponentProps> = ({
                 disabled={!isEditing}
               />
             </div>
+            <div className="d-flex align-items-center w-100 mb-1 mx-0">
+              <label className="text-muted w-auto"> Hystresis: </label>
+              <input
+                title="temperature hysteresis"
+                type="number"
+                className={`w-auto mx-1 ${
+                  isEditing
+                    ? "form-control"
+                    : "form-control-plaintext text-muted"
+                }`}
+                value={Number(localItem.hysteresis)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setLocalItem((prevItem) => ({
+                    ...prevItem,
+                    hysteresis: Number(e.target.value),
+                  }));
+                }}
+                disabled={!isEditing}
+              />
+            </div>
           </div>
           <div className="d-flex align-items-center w-100 mb-1 mx-0">
             <label className="text-muted w-auto"> Length: </label>
