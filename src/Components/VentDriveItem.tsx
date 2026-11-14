@@ -4,15 +4,13 @@ import { PencilSquare } from "react-bootstrap-icons";
 import { FloppyFill } from "react-bootstrap-icons";
 import { FusionBusApiData, VentDriveApiData } from "../api/apiService";
 import ItemTitle from "./ItemTitle";
-import LogConfig from "./LogConfig";
-import { LogConfigProps } from "./LogConfig";
-import { Button, ProgressBar, Spinner } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import SensorPicker from "./SensorPicker";
 
 interface TempSensorItemComponentProps {
   item: VentDriveApiData;
   devices: FusionBusApiData[];
-  onRemove: (id: number) => void;
+  onRemove: (id: string) => void;
   onSave: (item: VentDriveApiData) => void;
 }
 
@@ -22,7 +20,7 @@ const VentDriveItem: React.FC<TempSensorItemComponentProps> = ({
   onRemove,
   onSave,
 }) => {
-  const encode64BitNumberToBase62 = (num: number) => {
+  const encode64BitNumberToBase62 = (num: number | string) => {
     const BASE62 =
       "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     let bigIntNum = BigInt(num);
@@ -30,15 +28,11 @@ const VentDriveItem: React.FC<TempSensorItemComponentProps> = ({
 
     let base62String = "";
     while (bigIntNum > 0) {
-      let remainder = bigIntNum % 62n;
+      const remainder = bigIntNum % 62n;
       base62String = BASE62[Number(remainder)] + base62String;
       bigIntNum /= 62n;
     }
     return base62String;
-  };
-
-  const handleRemove = () => {
-    onRemove(localItem.id);
   };
 
   const handleNameChange = (name: string) => {
@@ -393,19 +387,6 @@ const VentDriveItem: React.FC<TempSensorItemComponentProps> = ({
             </Button>
           </div>
         </div>
-        <LogConfig
-          config={{
-            logInterval: item.logInterval,
-            logOnlyOnChange: item.logOnlyOnChange,
-            loggingEnabled: item.loggingEnabled,
-          }}
-          onChange={(config: LogConfigProps) => {
-            localItem.logInterval = config.logInterval;
-            localItem.logOnlyOnChange = config.logOnlyOnChange;
-            localItem.loggingEnabled = config.loggingEnabled;
-          }}
-          disabled={!isEditing}
-        />
         <div className="d-flex w-100">
           <button
             className="btn btn-danger w-100 mx-1"

@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react";
-
 import { FusionBusApiData } from "../api/apiService";
 
 interface SensorPickerProps {
@@ -42,7 +40,7 @@ const SensorPicker: React.FC<SensorPickerProps> = ({
               <option key={sensor.id} value={sensor.id}>
                 {sensor.name}
               </option>
-            )
+            ),
         )}
       </select>
     </div>

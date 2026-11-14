@@ -1,9 +1,4 @@
 {
-  "compilerOptions": {
-    "noEmitOnError": false,
-    "noEmit": true,
-    "strict": false
-  },
   "files": [],
   "references": [
     {

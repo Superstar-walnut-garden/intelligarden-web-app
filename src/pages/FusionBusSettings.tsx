@@ -3,7 +3,7 @@ import GenericListGroup from "../Components/GenericListGroup";
 import TitleBar from "../Components/TitleBar";
 import VentDriveItem from "../Components/VentDriveItem";
 import * as ApiService from "../api/apiService";
-import { VentDriveApiData } from "../api/apiService";
+import { FusionBusApiData } from "../api/apiService";
 import TempSensorItem from "../Components/TempSensorItem";
 
 const FusionBusSettings: React.FC = () => {
@@ -40,7 +40,7 @@ const FusionBusSettings: React.FC = () => {
     }
   };
 
-  const deleteSensor = async (id: number) => {
+  const deleteSensor = async (id: string) => {
     try {
       await ApiService.deleteFusionBusItem(id);
     } catch (error) {
@@ -49,7 +49,7 @@ const FusionBusSettings: React.FC = () => {
     fetchList(); //get updated list
   };
 
-  const modifySensor = async (updatedItem: VentDriveApiData) => {
+  const modifySensor = async (updatedItem: FusionBusApiData) => {
     try {
       await ApiService.modifyFusionBusItem(updatedItem.id, updatedItem);
     } catch (error) {
@@ -69,7 +69,7 @@ const FusionBusSettings: React.FC = () => {
             onRemove={deleteSensor}
             onSave={modifySensor}
             renderItem={(item, onSave, onRemove) => {
-              if (item.type === "VentDrive" || item.type === "Unknown") {
+              if (item.type === "VentDrive") {
                 return (
                   <VentDriveItem
                     item={item}
@@ -87,9 +87,22 @@ const FusionBusSettings: React.FC = () => {
                   />
                 );
               }
+              return (
+                <div className="d-flex align-items-center justify-content-between p-2">
+                  <span>
+                    {item.name} ({item.type})
+                  </span>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => deleteSensor(item.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              );
             }}
             defaultItemProps={{
-              id: 0,
+              id: "",
               name: "Untitled Sensor",
               status: false,
             }}

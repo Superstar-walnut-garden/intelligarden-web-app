@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
         ext: ".gz",
         filter: () => true, // Compress all files
         deleteOriginFile: true, // Removes original files after compression
+        verbose: false,
       }),
     ],
     server: {

@@ -9,7 +9,7 @@ import { LogConfigProps } from "./LogConfig";
 
 interface TempSensorItemComponentProps {
   item: TempSensorApiData;
-  onRemove: (id: number) => void;
+  onRemove: (id: string) => void;
   onSave: (item: TempSensorApiData) => void;
 }
 
@@ -18,7 +18,7 @@ const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
   onRemove,
   onSave,
 }) => {
-  const encode64BitNumberToBase62 = (num: number) => {
+  const encode64BitNumberToBase62 = (num: number | string) => {
     const BASE62 =
       "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     let bigIntNum = BigInt(num);
@@ -26,15 +26,11 @@ const TempSensorItem: React.FC<TempSensorItemComponentProps> = ({
 
     let base62String = "";
     while (bigIntNum > 0) {
-      let remainder = bigIntNum % 62n;
+      const remainder = bigIntNum % 62n;
       base62String = BASE62[Number(remainder)] + base62String;
       bigIntNum /= 62n;
     }
     return base62String;
-  };
-
-  const handleRemove = () => {
-    onRemove(localItem.id);
   };
 
   const handleNameChange = (name: string) => {
