@@ -15,7 +15,12 @@ const ThermostatManagerPage: React.FC = () => {
 
   useEffect(() => {
     const getSensorList = async () => {
-      setSensorList(await ApiService.getSensorList());
+      const devices = await ApiService.getFusionBusList();
+      setSensorList(
+        devices.filter(
+          (device): device is TempSensorApiData => device.type === "TempSensor",
+        ),
+      );
     };
     getSensorList();
   }, []);

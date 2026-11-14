@@ -180,7 +180,15 @@ const SchedulerItem: React.FC<SchedulerItemComponentProps> = ({
         </div>
       )}
       <div className="d-flex w-100 p-1">
-        <button className="btn btn-danger w-100 mx-1" onClick={handleRemove}>
+        <button
+          className="btn btn-danger w-100 mx-1"
+          onClick={() => {
+            const isConfirmed = window.confirm("Are You Sure to Delete?");
+            if (isConfirmed) {
+              onRemove(localItem.id);
+            }
+          }}
+        >
           Remove
         </button>
         <button
