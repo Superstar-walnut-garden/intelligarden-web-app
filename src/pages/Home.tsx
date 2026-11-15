@@ -38,6 +38,12 @@ const Home = () => {
             bgColor="#fff3e0"
           />
           <Widget
+            title="Sandflush Pro"
+            info="Automated Backwashing Reimagined"
+            link="/sandflush-pro"
+            bgColor="#ffcc99"
+          />
+          <Widget
             title="Water Sensor Settings"
             info="Pond Inlet Water Data Logging"
             link="/"

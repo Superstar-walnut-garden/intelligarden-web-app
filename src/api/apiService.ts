@@ -315,12 +315,12 @@ export const getFusionBusList = async (): Promise<FusionBusApiData[]> => {
   return response.data;
 };
 
-export const deleteFusionBusItem = async (id: string): Promise<void> => {
+export const deleteFusionBusItem = async (id: number): Promise<void> => {
   await axios.delete(apiBaseUrl + "/fusionbus?id=" + id);
 };
 
 export const modifyFusionBusItem = async (
-  id: string,
+  id: number,
   item: FusionBusApiData,
 ): Promise<void> => {
   await axios.put(apiBaseUrl + "/fusionbus?id=" + id, item);
@@ -462,4 +462,57 @@ export interface SignalHubItem {
 export const getSignalHubList = async (): Promise<SignalHubItem[]> => {
   const response = await axios.get<SignalHubItem[]>(apiBaseUrl + "/signal-hub");
   return response.data;
+};
+
+// -----------------------
+// SandFlush API
+// -----------------------
+export interface SandFlushApiData {
+  id: number;
+  name: string;
+  status: boolean;
+  valveDelay: number;
+  parallelFilterCount: number;
+  minFlushInterval: number;
+  flushInterval: number;
+  flushDuration: number;
+  dwellTime: number;
+  dpSetpoint: number;
+  dp: number;
+  switchSequence: boolean;
+  lastBackwashReversed: boolean;
+  isBackwashing: boolean;
+  backwashingFilterNumber: number;
+  remainingBackwashTime: number;
+  manualFlush: boolean;
+  filtrationTimeSinceBackwash: number;
+  triggerMode: "dP" | "interval" | "hybrid";
+
+  logInterval: number;
+  logOnlyOnChange: boolean;
+  loggingEnabled: boolean;
+}
+
+export const getSandFlushList = async (): Promise<SandFlushApiData[]> => {
+  const response = await axios.get<SandFlushApiData[]>(
+    apiBaseUrl + "/sandflush",
+  );
+  return response.data;
+};
+
+export const createSandFlush = async (
+  item: SandFlushApiData,
+): Promise<void> => {
+  await axios.post(apiBaseUrl + "/sandflush", item);
+};
+
+export const deleteSandFlush = async (id: number): Promise<void> => {
+  await axios.delete(apiBaseUrl + "/sandflush?id=" + id);
+};
+
+export const modifySandFlush = async (
+  id: number,
+  item: SandFlushApiData,
+): Promise<void> => {
+  await axios.put(apiBaseUrl + "/sandflush?id=" + id, item);
 };

@@ -11,6 +11,7 @@ import ThermostatManagerPage from "./pages/ThermostatManagerPage";
 import TimezoneSettings from "./pages/TimezoneSettings";
 import DataLoggingPage from "./pages/DataLoggingPage";
 import FusionBusSettings from "./pages/FusionBusSettings";
+import SandFlushSettings from "./pages/SandFlushSettings";
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
         <Route path="/wifi-settings" element={<WifiSettings />} />
         <Route path="/firebase-settings" element={<FirebaseSettings />} />
         <Route path="/fusionbus-devices" element={<FusionBusSettings />} />
+        <Route path="/sandflush-pro" element={<SandFlushSettings />} />
         <Route path="/signal-manager" element={<SignalManager />} />
         <Route path="/io-manager" element={<PinManagerPage />} />
         <Route path="/display-settings" element={<DisplaySettings />} />
