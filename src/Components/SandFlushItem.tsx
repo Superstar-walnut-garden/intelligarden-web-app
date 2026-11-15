@@ -1,20 +1,44 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  PencilSquare,
-  FloppyFill,
-  Trash,
-  ChevronDown,
-  ChevronUp,
-} from "react-bootstrap-icons";
+import { PencilSquare, FloppyFill, Trash } from "react-bootstrap-icons";
 
-import { SandFlushApiData } from "../api/apiService";
+import {
+  SandFlushApiData,
+  OperatingState,
+  TriggerMode,
+} from "../api/apiService";
+
+import ItemTitle from "./ItemTitle";
+import LogConfig from "./LogConfig";
+import { LogConfigProps } from "./LogConfig";
 
 interface SandFlushItemComponentProps {
   item: SandFlushApiData;
   onRemove: (id: number) => void;
   onSave: (item: SandFlushApiData) => void;
 }
+
+type NumericConfigField =
+  | "parallelFilterCount"
+  | "valveDelay"
+  | "minFlushInterval"
+  | "flushInterval"
+  | "flushDuration"
+  | "dwellTime"
+  | "dpSetpoint";
+
+const numericSettings: {
+  label: string;
+  field: NumericConfigField;
+}[] = [
+  { label: "Parallel filters", field: "parallelFilterCount" },
+  { label: "Valve delay", field: "valveDelay" },
+  { label: "Min flush interval", field: "minFlushInterval" },
+  { label: "Flush interval", field: "flushInterval" },
+  { label: "Flush duration", field: "flushDuration" },
+  { label: "Dwell time", field: "dwellTime" },
+  { label: "dP setpoint", field: "dpSetpoint" },
+];
 
 const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
   item,
@@ -25,32 +49,62 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isConfigExpanded, setIsConfigExpanded] = useState(false);
 
+  const isBackwashing = localItem.operatingState === OperatingState.Backwashing;
+
   useEffect(() => {
     if (!isEditing) setLocalItem(item);
   }, [item, isEditing]);
 
+  // Save configuration
   const handleSave = () => {
     onSave({ ...localItem });
     setIsEditing(false);
     setIsConfigExpanded(false);
   };
 
+  // Edit configuration
   const handleEdit = () => {
     setIsEditing(true);
     setIsConfigExpanded(true);
   };
 
+  // Remove item
   const handleRemove = () => {
     if (window.confirm("Are you sure you want to remove this item?")) {
       onRemove(item.id);
     }
   };
 
-  const updateNumber = (field: keyof SandFlushApiData, value: string) => {
+  // Update numeric configuration
+  const updateNumber = (field: NumericConfigField, value: string) => {
     setLocalItem((prev) => ({
       ...prev,
       [field]: Number(value),
     }));
+  };
+
+  // Update logging configuration
+  const handleLogConfigChange = (config: LogConfigProps) => {
+    setLocalItem((prev) => ({
+      ...prev,
+      ...config,
+    }));
+  };
+
+  // Trigger manual flush
+  const handleManualFlush = () => {
+    onSave({
+      ...item,
+      manualFlush: true,
+    });
+  };
+
+  // Cancel active backwash
+  const handleCancelFlush = () => {
+    onSave({
+      ...item,
+      cancelFlush: true,
+    });
   };
 
   // Compact configuration summary
@@ -64,10 +118,19 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
     `dP ${localItem.dpSetpoint}`,
     localItem.triggerMode,
     `Seq ${localItem.switchSequence ? "ON" : "OFF"}`,
+    localItem.loggingEnabled ? `Log ${localItem.logInterval}s` : "Log OFF",
   ].join(" · ");
 
+  // Format filtration time
+  const filtrationTime =
+    localItem.filtrationTimeSinceBackwash >= 60
+      ? `${(localItem.filtrationTimeSinceBackwash / 60)
+          .toFixed(1)
+          .replace(/\.0$/, "")}h`
+      : `${localItem.filtrationTimeSinceBackwash}m`;
+
   return (
-    <div className="card shadow-sm m-2">
+    <div className={`card shadow-sm m-2 ${isEditing ? "border-primary" : ""}`}>
       {/* Header */}
       <div className="card-header py-2 d-flex justify-content-between align-items-center">
         <div className="flex-grow-1 me-2">
@@ -99,6 +162,7 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
           </span>
 
           <button
+            type="button"
             className="btn btn-sm btn-outline-danger border-0"
             onClick={handleRemove}
             title="Remove item"
@@ -112,106 +176,111 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
       <div className="card-body p-2">
         {/* Live operation */}
         <div className="row g-0 mb-2">
+          {/* Differential pressure */}
           <div className="col-6 border-end pe-2">
             <div className="small text-muted">Differential pressure</div>
 
-            <div className="fs-4 fw-semibold">{localItem.dp + "Bar"}</div>
+            <div className="fs-4 fw-semibold">{localItem.dp} Bar</div>
 
             <div className="small text-muted">
               Setpoint: {localItem.dpSetpoint}
             </div>
           </div>
 
+          {/* Operating state */}
           <div className="col-6 ps-2">
             <div className="small text-muted d-flex align-items-center gap-1">
-              {localItem.isBackwashing ? "Backwashing" : "Backwash"}
+              {isBackwashing ? "Backwashing" : "Operation"}
 
-              {localItem.isBackwashing && (
+              {isBackwashing && (
                 <span
                   className="spinner-border spinner-border-sm text-success"
                   role="status"
+                  aria-hidden="true"
                 />
               )}
             </div>
 
             <div className="fs-4 fw-semibold">
-              {localItem.isBackwashing
+              {isBackwashing
                 ? `${localItem.remainingBackwashTime}s`
-                : "Idle"}
+                : localItem.operatingState === OperatingState.Filtering
+                  ? "Filtering"
+                  : "Idle"}
             </div>
 
             <div className="small text-muted">
-              {localItem.isBackwashing
+              {isBackwashing
                 ? `Filter ${localItem.backwashingFilterNumber}`
-                : "No active backwash"}
+                : localItem.operatingState === OperatingState.Filtering
+                  ? "Filtration active"
+                  : "No active backwash"}
             </div>
           </div>
         </div>
 
+        {/* Runtime information and operation button */}
         <div className="d-flex flex-nowrap justify-content-between align-items-center gap-1 small text-muted border-top pt-2">
           <span className="text-nowrap">
-            Filtration:{" "}
-            <strong className="text-body">
-              {localItem.filtrationTimeSinceBackwash >= 60
-                ? `${(localItem.filtrationTimeSinceBackwash / 60)
-                    .toFixed(1)
-                    .replace(/\.0$/, "")}h`
-                : `${localItem.filtrationTimeSinceBackwash}m`}
-            </strong>
+            Filtration: <strong className="text-body">{filtrationTime}</strong>
           </span>
 
           <span className="text-nowrap">
-            Reversed:{" "}
+            sequence:{" "}
             <strong className="text-body">
-              {localItem.lastBackwashReversed ? "YES" : "NO"}
+              {localItem.flushSequenceReversed ? "Reverse" : "Normal"}
             </strong>
           </span>
 
-          <button
-            type="button"
-            className={`btn btn-sm py-0 px-2 text-nowrap ${
-              localItem.isBackwashing ? "btn-secondary" : "btn-outline-primary"
-            }`}
-            disabled={localItem.isBackwashing}
-            onClick={() => onSave({ ...item, manualFlush: true })}
-            title={
-              localItem.isBackwashing
-                ? "Unavailable during backwashing"
-                : "Start manual backwash"
-            }
-          >
-            Manual flush
-          </button>
+          {isBackwashing ? (
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-danger py-0 px-2 text-nowrap"
+              onClick={handleCancelFlush}
+              title="Cancel active backwash"
+            >
+              Cancel
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-primary py-0 px-2 text-nowrap"
+              onClick={handleManualFlush}
+              title="Start manual backwash"
+            >
+              Manual
+            </button>
+          )}
         </div>
+
         {/* Configuration */}
         <div className="border-top mt-2 pt-2">
           {/* Configuration header */}
           <div className="d-flex justify-content-between align-items-center">
             <strong className="small">Configuration</strong>
 
-            <div className="d-flex align-items-center gap-1">
-              <button
-                className={`btn btn-sm ${
-                  isEditing ? "btn-success" : "btn-outline-primary"
-                }`}
-                onClick={isEditing ? handleSave : handleEdit}
-              >
-                {isEditing ? (
-                  <>
-                    <FloppyFill className="me-1" />
-                    Save
-                  </>
-                ) : (
-                  <>
-                    <PencilSquare className="me-1" />
-                    Edit
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              type="button"
+              className={`btn btn-sm ${
+                isEditing ? "btn-success" : "btn-outline-primary"
+              }`}
+              onClick={isEditing ? handleSave : handleEdit}
+            >
+              {isEditing ? (
+                <>
+                  <FloppyFill className="me-1" />
+                  Save
+                </>
+              ) : (
+                <>
+                  <PencilSquare className="me-1" />
+                  Edit
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Always visible compact summary */}
+          {/* Always visible configuration summary */}
           {!isEditing && (
             <div className="small text-muted mt-2">{configSummary}</div>
           )}
@@ -220,15 +289,7 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
           {isConfigExpanded && (
             <div className="mt-2 border-top pt-2">
               {/* Numeric settings */}
-              {[
-                ["Parallel filters", "parallelFilterCount"],
-                ["Valve delay", "valveDelay"],
-                ["Min flush interval", "minFlushInterval"],
-                ["Flush interval", "flushInterval"],
-                ["Flush duration", "flushDuration"],
-                ["Dwell time", "dwellTime"],
-                ["dP setpoint", "dpSetpoint"],
-              ].map(([label, field]) => (
+              {numericSettings.map(({ label, field }) => (
                 <div
                   key={field}
                   className="d-flex align-items-center justify-content-between py-1"
@@ -240,13 +301,8 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
                     step="any"
                     className="form-control form-control-sm"
                     style={{ width: "100px" }}
-                    value={localItem[field as keyof SandFlushApiData] as number}
-                    onChange={(e) =>
-                      updateNumber(
-                        field as keyof SandFlushApiData,
-                        e.target.value,
-                      )
-                    }
+                    value={localItem[field]}
+                    onChange={(e) => updateNumber(field, e.target.value)}
                   />
                 </div>
               ))}
@@ -262,14 +318,13 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
                   onChange={(e) =>
                     setLocalItem((prev) => ({
                       ...prev,
-                      triggerMode: e.target
-                        .value as SandFlushApiData["triggerMode"],
+                      triggerMode: e.target.value as TriggerMode,
                     }))
                   }
                 >
-                  <option value="dP">dP</option>
-                  <option value="interval">Interval</option>
-                  <option value="hybrid">Hybrid</option>
+                  <option value={TriggerMode.DP}>dP</option>
+                  <option value={TriggerMode.Interval}>Interval</option>
+                  <option value={TriggerMode.Hybrid}>Hybrid</option>
                 </select>
               </div>
 
@@ -294,6 +349,19 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
                 >
                   Switch sequence
                 </label>
+              </div>
+
+              {/* Logging configuration */}
+              <div className="border-top mt-2 pt-2">
+                <LogConfig
+                  config={{
+                    logInterval: localItem.logInterval,
+                    logOnlyOnChange: localItem.logOnlyOnChange,
+                    loggingEnabled: localItem.loggingEnabled,
+                  }}
+                  onChange={handleLogConfigChange}
+                  disabled={!isEditing}
+                />
               </div>
             </div>
           )}

@@ -467,6 +467,16 @@ export const getSignalHubList = async (): Promise<SignalHubItem[]> => {
 // -----------------------
 // SandFlush API
 // -----------------------
+export enum OperatingState {
+  Idle = "idle",
+  Filtering = "filtering",
+  Backwashing = "backwashing",
+}
+export enum TriggerMode {
+  DP = "dP",
+  Interval = "interval",
+  Hybrid = "hybrid",
+}
 export interface SandFlushApiData {
   id: number;
   name: string;
@@ -480,13 +490,14 @@ export interface SandFlushApiData {
   dpSetpoint: number;
   dp: number;
   switchSequence: boolean;
-  lastBackwashReversed: boolean;
-  isBackwashing: boolean;
+  flushSequenceReversed: boolean;
+  operatingState: OperatingState;
   backwashingFilterNumber: number;
   remainingBackwashTime: number;
   manualFlush: boolean;
+  cancelFlush: boolean;
   filtrationTimeSinceBackwash: number;
-  triggerMode: "dP" | "interval" | "hybrid";
+  triggerMode: TriggerMode;
 
   logInterval: number;
   logOnlyOnChange: boolean;
