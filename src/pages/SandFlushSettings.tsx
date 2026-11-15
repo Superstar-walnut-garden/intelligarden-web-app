@@ -58,9 +58,8 @@ const SandFlushSettings: React.FC = () => {
 
   return (
     <>
+      <TitleBar title="SandFlush Pro" />
       <div className="d-flex flex-column align-items-center">
-        <TitleBar title="SandFlush Pro" />
-
         <div className="d-flex justify-content-center align-items-center w-100">
           <GenericListGroup<SandFlushApiData>
             items={items}
