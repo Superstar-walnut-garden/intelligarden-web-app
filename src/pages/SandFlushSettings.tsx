@@ -11,6 +11,9 @@ import SandFlushItem from "../Components/SandFlushItem";
 
 const SandFlushSettings: React.FC = () => {
   const [items, setItems] = useState<SandFlushApiData[]>([]);
+  const [fusionBusItems, setFusionBusItems] = useState<
+    ApiService.FusionBusApiData[]
+  >([]);
 
   const fetchList = useCallback(async () => {
     try {
@@ -20,6 +23,19 @@ const SandFlushSettings: React.FC = () => {
       console.error("Error fetching SandFlush list:", error);
     }
   }, []);
+
+  const fetchFusionBusItems = useCallback(async () => {
+    try {
+      const data = await ApiService.getFusionBusList();
+      setFusionBusItems(data);
+    } catch (error) {
+      console.error("Error fetching FusionBus items:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchFusionBusItems();
+  });
 
   useEffect(() => {
     fetchList();
@@ -67,7 +83,12 @@ const SandFlushSettings: React.FC = () => {
             onRemove={deleteItem}
             onSave={modifyItem}
             renderItem={(item, onSave, onRemove) => (
-              <SandFlushItem item={item} onSave={onSave} onRemove={onRemove} />
+              <SandFlushItem
+                item={item}
+                fusionBusDevs={fusionBusItems}
+                onSave={onSave}
+                onRemove={onRemove}
+              />
             )}
             defaultItemProps={{
               id: 0,

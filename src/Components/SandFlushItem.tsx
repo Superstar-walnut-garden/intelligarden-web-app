@@ -6,14 +6,16 @@ import {
   SandFlushApiData,
   OperatingState,
   TriggerMode,
+  FusionBusApiData,
 } from "../api/apiService";
 
-import ItemTitle from "./ItemTitle";
+import FusionBusDevPicker from "./FusionBusDevPicker";
 import LogConfig from "./LogConfig";
 import { LogConfigProps } from "./LogConfig";
 
 interface SandFlushItemComponentProps {
   item: SandFlushApiData;
+  fusionBusDevs: FusionBusApiData[];
   onRemove: (id: number) => void;
   onSave: (item: SandFlushApiData) => void;
 }
@@ -30,18 +32,20 @@ type NumericConfigField =
 const numericSettings: {
   label: string;
   field: NumericConfigField;
+  unit: string;
 }[] = [
-  { label: "Parallel filters", field: "parallelFilterCount" },
-  { label: "Valve delay", field: "valveDelay" },
-  { label: "Min flush interval", field: "minFlushInterval" },
-  { label: "Flush interval", field: "flushInterval" },
-  { label: "Flush duration", field: "flushDuration" },
-  { label: "Dwell time", field: "dwellTime" },
-  { label: "dP setpoint", field: "dpSetpoint" },
+  { label: "Parallel filters", field: "parallelFilterCount", unit: "#" },
+  { label: "Valve delay", field: "valveDelay", unit: "Sec" },
+  { label: "Min flush interval", field: "minFlushInterval", unit: "Min" },
+  { label: "Flush interval", field: "flushInterval", unit: "Min" },
+  { label: "Flush duration", field: "flushDuration", unit: "Sec" },
+  { label: "Dwell time", field: "dwellTime", unit: "Sec" },
+  { label: "dP setpoint", field: "dpSetpoint", unit: "Bar" },
 ];
 
 const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
   item,
+  fusionBusDevs,
   onRemove,
   onSave,
 }) => {
@@ -289,21 +293,26 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
           {isConfigExpanded && (
             <div className="mt-2 border-top pt-2">
               {/* Numeric settings */}
-              {numericSettings.map(({ label, field }) => (
+              {numericSettings.map(({ label, field, unit }) => (
                 <div
                   key={field}
                   className="d-flex align-items-center justify-content-between py-1"
                 >
-                  <label className="small text-muted">{label}</label>
+                  <label className="small text-muted mb-0">{label}</label>
 
-                  <input
-                    type="number"
-                    step="any"
-                    className="form-control form-control-sm"
-                    style={{ width: "100px" }}
-                    value={localItem[field]}
-                    onChange={(e) => updateNumber(field, e.target.value)}
-                  />
+                  <div
+                    className="input-group input-group-sm"
+                    style={{ width: "125px" }}
+                  >
+                    <input
+                      type="number"
+                      step="any"
+                      className="form-control"
+                      value={localItem[field]}
+                      onChange={(e) => updateNumber(field, e.target.value)}
+                    />
+                    <span className="input-group-text">{unit}</span>
+                  </div>
                 </div>
               ))}
 
@@ -326,6 +335,23 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
                   <option value={TriggerMode.Interval}>Interval</option>
                   <option value={TriggerMode.Hybrid}>Hybrid</option>
                 </select>
+              </div>
+              <div className="d-flex align-items-center justify-content-between py-1">
+                <label className="small text-muted">dP sensor</label>
+                <div style={{ width: "100px" }}>
+                  <FusionBusDevPicker
+                    devices={fusionBusDevs}
+                    filterDevices={(device) => device.type === "PressureSensor"}
+                    isEditing={isEditing}
+                    selectedId={"1"}
+                    onChange={(selectedId: string) => {
+                      setLocalItem((prevItem) => ({
+                        ...prevItem,
+                        pressureSensorId: selectedId,
+                      }));
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Switch sequence */}
