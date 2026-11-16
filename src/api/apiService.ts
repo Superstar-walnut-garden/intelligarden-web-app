@@ -298,6 +298,11 @@ export interface VentDriveApiData extends FusionBusBaseApiData {
   hysteresis: Number;
   sensor: string;
 }
+export interface PressureSensorApiData extends FusionBusBaseApiData {
+  type: "PressureSensor";
+  range: number;
+  pressure: number;
+}
 
 export interface OtherFusionBusApiData extends FusionBusBaseApiData {
   type: "SoilSensor" | "Unknown";
@@ -306,7 +311,8 @@ export interface OtherFusionBusApiData extends FusionBusBaseApiData {
 export type FusionBusApiData =
   | TempSensorApiData
   | VentDriveApiData
-  | OtherFusionBusApiData;
+  | OtherFusionBusApiData
+  | PressureSensorApiData;
 
 export const getFusionBusList = async (): Promise<FusionBusApiData[]> => {
   const response = await axios.get<FusionBusApiData[]>(
@@ -498,6 +504,7 @@ export interface SandFlushApiData {
   cancelFlush: boolean;
   filtrationTimeSinceBackwash: number;
   triggerMode: TriggerMode;
+  pressureSensorId: string;
 
   logInterval: number;
   logOnlyOnChange: boolean;
