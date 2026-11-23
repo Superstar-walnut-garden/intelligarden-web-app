@@ -35,7 +35,7 @@ const SandFlushSettings: React.FC = () => {
 
   useEffect(() => {
     fetchFusionBusItems();
-  });
+  }, []);
 
   useEffect(() => {
     fetchList();
@@ -43,7 +43,7 @@ const SandFlushSettings: React.FC = () => {
     const intervalId = window.setInterval(fetchList, 3000);
 
     return () => window.clearInterval(intervalId);
-  }, [fetchList]);
+  }, []);
 
   const deleteItem = async (id: number) => {
     try {
@@ -93,7 +93,7 @@ const SandFlushSettings: React.FC = () => {
             defaultItemProps={{
               id: 0,
               name: "Untitled SandFlush",
-              status: false,
+              status: true,
 
               valveDelay: 0,
               parallelFilterCount: 1,
@@ -117,6 +117,7 @@ const SandFlushSettings: React.FC = () => {
 
               filtrationTimeSinceBackwash: 0,
               triggerMode: TriggerMode.DP,
+              pressureSensorId: "-1",
 
               logInterval: 0,
               logOnlyOnChange: false,

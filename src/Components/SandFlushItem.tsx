@@ -136,45 +136,61 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
   return (
     <div className={`card shadow-sm m-2 ${isEditing ? "border-primary" : ""}`}>
       {/* Header */}
-      <div className="card-header py-2 d-flex justify-content-between align-items-center">
-        <div className="flex-grow-1 me-2">
-          {isEditing ? (
-            <input
-              className="form-control form-control-sm"
-              value={localItem.name}
-              onChange={(e) =>
-                setLocalItem((prev) => ({
-                  ...prev,
-                  name: e.target.value,
-                }))
-              }
-            />
-          ) : (
-            <strong>{localItem.name}</strong>
-          )}
+      <div className="card-header p-0">
+        <div className="py-2 px-3 d-flex justify-content-between align-items-center">
+          <div className="flex-grow-1 me-2">
+            {isEditing ? (
+              <input
+                className="form-control form-control-sm"
+                value={localItem.name}
+                onChange={(e) =>
+                  setLocalItem((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
+                }
+              />
+            ) : (
+              <strong>{localItem.name}</strong>
+            )}
 
-          <div className="small text-muted">ID: {localItem.id}</div>
+            <div className="small text-muted">ID: {localItem.id}</div>
+          </div>
+
+          <div className="d-flex align-items-center gap-2">
+            <span
+              className={`badge ${
+                localItem.status ? "bg-success" : "bg-secondary"
+              }`}
+            >
+              {localItem.status ? "ON" : "OFF"}
+            </span>
+
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-danger border-0"
+              onClick={handleRemove}
+              title="Remove item"
+              aria-label="Remove item"
+            >
+              <Trash />
+            </button>
+          </div>
         </div>
 
-        <div className="d-flex align-items-center gap-2">
-          <span
-            className={`badge ${
-              localItem.status ? "bg-success" : "bg-secondary"
-            }`}
-          >
-            {localItem.status ? "ON" : "OFF"}
-          </span>
-
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-danger border-0"
-            onClick={handleRemove}
-            title="Remove item"
-            aria-label="Remove item"
-          >
-            <Trash />
-          </button>
-        </div>
+        {item.autoBackwashInterrupted && !isBackwashing && (
+          <div className="d-flex align-items-center  gap-2 px-3 py-1 border-top bg-body-tertiary">
+            <span className="small text-secondary">
+              Auto-backwash interrupted
+              {item.autoBackwashRetryIn > 0 && (
+                <>
+                  <span className="mx-1">·</span>
+                  Retry in {item.autoBackwashRetryIn} min
+                </>
+              )}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="card-body p-2">
@@ -215,7 +231,9 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
 
             <div className="small text-muted">
               {isBackwashing
-                ? `Filter ${localItem.backwashingFilterNumber}`
+                ? localItem.backwashingFilterNumber === -1
+                  ? "Waiting"
+                  : `Filter ${localItem.backwashingFilterNumber}`
                 : localItem.operatingState === OperatingState.Filtering
                   ? "Filtration active"
                   : "No active backwash"}

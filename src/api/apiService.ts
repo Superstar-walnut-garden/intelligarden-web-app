@@ -321,12 +321,12 @@ export const getFusionBusList = async (): Promise<FusionBusApiData[]> => {
   return response.data;
 };
 
-export const deleteFusionBusItem = async (id: number): Promise<void> => {
+export const deleteFusionBusItem = async (id: string): Promise<void> => {
   await axios.delete(apiBaseUrl + "/fusionbus?id=" + id);
 };
 
 export const modifyFusionBusItem = async (
-  id: number,
+  id: string,
   item: FusionBusApiData,
 ): Promise<void> => {
   await axios.put(apiBaseUrl + "/fusionbus?id=" + id, item);
@@ -474,14 +474,14 @@ export const getSignalHubList = async (): Promise<SignalHubItem[]> => {
 // SandFlush API
 // -----------------------
 export enum OperatingState {
-  Idle = "idle",
-  Filtering = "filtering",
-  Backwashing = "backwashing",
+  Idle = "Idle",
+  Filtering = "Filtering",
+  Backwashing = "Backwashing",
 }
 export enum TriggerMode {
-  DP = "dP",
-  Interval = "interval",
-  Hybrid = "hybrid",
+  DP = "DP",
+  Interval = "Interval",
+  Hybrid = "Hybrid",
 }
 export interface SandFlushApiData {
   id: number;
@@ -502,6 +502,8 @@ export interface SandFlushApiData {
   remainingBackwashTime: number;
   manualFlush: boolean;
   cancelFlush: boolean;
+  autoBackwashRetryIn: number;
+  autoBackwashInterrupted: boolean;
   filtrationTimeSinceBackwash: number;
   triggerMode: TriggerMode;
   pressureSensorId: string;
