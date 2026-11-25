@@ -482,6 +482,7 @@ export enum TriggerMode {
   DP = "DP",
   Interval = "Interval",
   Hybrid = "Hybrid",
+  ManualOnly = "ManualOnly",
 }
 export interface SandFlushApiData {
   id: number;
@@ -504,9 +505,11 @@ export interface SandFlushApiData {
   cancelFlush: boolean;
   autoBackwashRetryIn: number;
   autoBackwashInterrupted: boolean;
-  filtrationTimeSinceBackwash: number;
+  filtrationElapsedTimeSinceBackwash: number;
   triggerMode: TriggerMode;
   pressureSensorId: string;
+  startupDelay: number;
+  startupDelayRemaining: number;
 
   logInterval: number;
   logOnlyOnChange: boolean;

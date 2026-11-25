@@ -27,7 +27,8 @@ type NumericConfigField =
   | "flushInterval"
   | "flushDuration"
   | "dwellTime"
-  | "dpSetpoint";
+  | "dpSetpoint"
+  | "startupDelay";
 
 const numericSettings: {
   label: string;
@@ -39,8 +40,7 @@ const numericSettings: {
   { label: "Min flush interval", field: "minFlushInterval", unit: "Min" },
   { label: "Flush interval", field: "flushInterval", unit: "Min" },
   { label: "Flush duration", field: "flushDuration", unit: "Sec" },
-  { label: "Dwell time", field: "dwellTime", unit: "Sec" },
-  { label: "dP setpoint", field: "dpSetpoint", unit: "Bar" },
+  { label: "Startup Delay", field: "startupDelay", unit: "Sec" },
 ];
 
 const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
@@ -127,11 +127,11 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
 
   // Format filtration time
   const filtrationTime =
-    localItem.filtrationTimeSinceBackwash >= 60
-      ? `${(localItem.filtrationTimeSinceBackwash / 60)
+    localItem.filtrationElapsedTimeSinceBackwash >= 60
+      ? `${(localItem.filtrationElapsedTimeSinceBackwash / 60)
           .toFixed(1)
           .replace(/\.0$/, "")}h`
-      : `${localItem.filtrationTimeSinceBackwash}m`;
+      : `${localItem.filtrationElapsedTimeSinceBackwash}m`;
 
   return (
     <div className={`card shadow-sm m-2 ${isEditing ? "border-primary" : ""}`}>
@@ -178,19 +178,33 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
           </div>
         </div>
 
-        {item.autoBackwashInterrupted && !isBackwashing && (
-          <div className="d-flex align-items-center  gap-2 px-3 py-1 border-top bg-body-tertiary">
-            <span className="small text-secondary">
-              Auto-backwash interrupted
-              {item.autoBackwashRetryIn > 0 && (
-                <>
-                  <span className="mx-1">·</span>
-                  Retry in {item.autoBackwashRetryIn} min
-                </>
-              )}
-            </span>
-          </div>
-        )}
+        {!isBackwashing &&
+          (item.autoBackwashInterrupted || item.startupDelayRemaining > 0) && (
+            <div className="d-flex align-items-center gap-2 px-3 py-1 border-top bg-body-tertiary">
+              <span className="small text-secondary">
+                {item.autoBackwashInterrupted && <>Auto-backwash interrupted</>}
+
+                {item.startupDelayRemaining > 0 ? (
+                  <>
+                    {item.autoBackwashInterrupted && (
+                      <span className="mx-1">·</span>
+                    )}
+                    Startup delay:{" "}
+                    {item.startupDelayRemaining >= 60
+                      ? `${Math.floor(item.startupDelayRemaining / 60)} min ${item.startupDelayRemaining % 60} sec`
+                      : `${item.startupDelayRemaining} sec`}{" "}
+                    remaining
+                  </>
+                ) : item.autoBackwashInterrupted &&
+                  item.autoBackwashRetryIn > 0 ? (
+                  <>
+                    <span className="mx-1">·</span>
+                    Retry in {item.autoBackwashRetryIn} min
+                  </>
+                ) : null}
+              </span>
+            </div>
+          )}
       </div>
 
       <div className="card-body p-2">
@@ -352,6 +366,7 @@ const SandFlushItem: React.FC<SandFlushItemComponentProps> = ({
                   <option value={TriggerMode.DP}>dP</option>
                   <option value={TriggerMode.Interval}>Interval</option>
                   <option value={TriggerMode.Hybrid}>Hybrid</option>
+                  <option value={TriggerMode.ManualOnly}>Manual Only</option>
                 </select>
               </div>
               <div className="d-flex align-items-center justify-content-between py-1">

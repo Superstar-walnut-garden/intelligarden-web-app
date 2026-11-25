@@ -115,8 +115,9 @@ const SandFlushSettings: React.FC = () => {
               manualFlush: false,
               cancelFlush: false,
 
-              filtrationTimeSinceBackwash: 0,
-              triggerMode: TriggerMode.DP,
+              filtrationElapsedTimeSinceBackwash: 0,
+              startupDelay: 0,
+              triggerMode: TriggerMode.ManualOnly,
               pressureSensorId: "-1",
 
               logInterval: 0,
