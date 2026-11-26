@@ -298,6 +298,11 @@ export interface VentDriveApiData extends FusionBusBaseApiData {
   hysteresis: Number;
   sensor: string;
 }
+export interface PressureSensorApiData extends FusionBusBaseApiData {
+  type: "PressureSensor";
+  range: number;
+  pressure: number;
+}
 
 export interface OtherFusionBusApiData extends FusionBusBaseApiData {
   type: "SoilSensor" | "Unknown";
@@ -306,7 +311,8 @@ export interface OtherFusionBusApiData extends FusionBusBaseApiData {
 export type FusionBusApiData =
   | TempSensorApiData
   | VentDriveApiData
-  | OtherFusionBusApiData;
+  | OtherFusionBusApiData
+  | PressureSensorApiData;
 
 export const getFusionBusList = async (): Promise<FusionBusApiData[]> => {
   const response = await axios.get<FusionBusApiData[]>(
@@ -462,4 +468,74 @@ export interface SignalHubItem {
 export const getSignalHubList = async (): Promise<SignalHubItem[]> => {
   const response = await axios.get<SignalHubItem[]>(apiBaseUrl + "/signal-hub");
   return response.data;
+};
+
+// -----------------------
+// SandFlush API
+// -----------------------
+export enum OperatingState {
+  Idle = "Idle",
+  Filtering = "Filtering",
+  Backwashing = "Backwashing",
+}
+export enum TriggerMode {
+  DP = "DP",
+  Interval = "Interval",
+  Hybrid = "Hybrid",
+  ManualOnly = "ManualOnly",
+}
+export interface SandFlushApiData {
+  id: number;
+  name: string;
+  status: boolean;
+  valveDelay: number;
+  parallelFilterCount: number;
+  minFlushInterval: number;
+  flushInterval: number;
+  flushDuration: number;
+  dwellTime: number;
+  dpSetpoint: number;
+  dp: number;
+  switchSequence: boolean;
+  flushSequenceReversed: boolean;
+  operatingState: OperatingState;
+  backwashingFilterNumber: number;
+  remainingBackwashTime: number;
+  manualFlush: boolean;
+  cancelFlush: boolean;
+  autoBackwashRetryIn: number;
+  autoBackwashInterrupted: boolean;
+  filtrationElapsedTimeSinceBackwash: number;
+  triggerMode: TriggerMode;
+  pressureSensorId: string;
+  startupDelay: number;
+  startupDelayRemaining: number;
+
+  logInterval: number;
+  logOnlyOnChange: boolean;
+  loggingEnabled: boolean;
+}
+
+export const getSandFlushList = async (): Promise<SandFlushApiData[]> => {
+  const response = await axios.get<SandFlushApiData[]>(
+    apiBaseUrl + "/sandflush",
+  );
+  return response.data;
+};
+
+export const createSandFlush = async (
+  item: SandFlushApiData,
+): Promise<void> => {
+  await axios.post(apiBaseUrl + "/sandflush", item);
+};
+
+export const deleteSandFlush = async (id: number): Promise<void> => {
+  await axios.delete(apiBaseUrl + "/sandflush?id=" + id);
+};
+
+export const modifySandFlush = async (
+  id: number,
+  item: SandFlushApiData,
+): Promise<void> => {
+  await axios.put(apiBaseUrl + "/sandflush?id=" + id, item);
 };
